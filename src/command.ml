@@ -1,0 +1,44 @@
+(* Note: You may introduce new code anywhere in this file. *)
+
+type object_phrase = string * string
+
+type command =
+  | Go of object_phrase
+  | Quit
+
+exception Empty
+exception Malformed
+
+let parse str =
+  let no_spaces =
+    List.filter (fun s -> s <> "") (String.split_on_char ' ' str)
+  in
+  match no_spaces with
+  | [] -> raise Empty
+  | h :: t -> begin
+      match String.lowercase_ascii h with
+      | "quit" -> if t <> [] then raise Malformed else Quit
+      | "go" -> begin
+          match t with
+          | [] -> raise Malformed
+          | [ _ ] -> raise Malformed
+          | [ movef; movet ] ->
+              let movefrom = String.lowercase_ascii movef in
+              let moveto = String.lowercase_ascii movet in
+              if
+                (Char.code 'a' <= Char.code movefrom.[0]
+                && Char.code movefrom.[0] <= Char.code 'h'
+                && int_of_char movefrom.[1] - int_of_char '0' >= 1
+                && int_of_char movefrom.[1] - int_of_char '0' <= 8
+                && String.length movefrom = 2)
+                && Char.code 'a' <= Char.code moveto.[0]
+                && Char.code moveto.[0] <= Char.code 'h'
+                && int_of_char moveto.[1] - int_of_char '0' >= 1
+                && int_of_char moveto.[1] - int_of_char '0' <= 8
+                && String.length moveto = 2
+              then Go (movefrom, moveto)
+              else raise Malformed
+          | _ -> raise Malformed
+        end
+      | _ -> raise Malformed
+    end
