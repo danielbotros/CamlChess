@@ -4,8 +4,9 @@ type color =
 
 type position = int * int
 
-type square = position * color
 (** The type representing a particular square *)
+type square = position * color
+
 
 type direction =
   | North
