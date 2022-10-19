@@ -30,18 +30,23 @@ let piece_to_string piece =
 
 let string_to_piece str =
   match str with
-  | "pawn" -> Some Pawn
-  | "knight" -> Some Knight
-  | "king" -> Some King
-  | "queen" -> Some Queen
-  | "rook" -> Some Rook
-  | "bishop" -> Some Bishop
-  | _ -> None
+  | "pawn" -> Pawn
+  | "knight" -> Knight
+  | "king" -> King
+  | "queen" -> Queen
+  | "rook" -> Rook
+  | "bishop" -> Bishop
+  | _ -> failwith "invalid piece_type"
 
 let char_to_int c = Char.code c - Char.code '0'
 
 let create_piece p_type pos col =
-  { piece_type = p_type; position = pos; color = col; first_move = true }
+  {
+    piece_type = string_to_piece p_type;
+    position = pos;
+    color = col;
+    first_move = true;
+  }
 
 let get_piece piece = piece.piece_type
 let get_position piece = piece.position
