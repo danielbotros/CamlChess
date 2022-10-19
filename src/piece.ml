@@ -76,7 +76,10 @@ let string_of_pos (pos : position) =
   | Some (c, i) -> Some (String.make 1 c ^ string_of_int i)
   | None -> None
 
-let valid_pawn_move pos piece =
-  match piece.position, pos with
-  | Some (r1, c1), Some (r2, c2) -> ((r2 |> char_to_int) - (r1 |> char_to_int) |> abs) = 1 || (((r2 |> char_to_int) - (r1 |> char_to_int) |> abs)= 2 && piece.first_move = true))
+let valid_pawn_move (pos : position) piece =
+  match (piece.position, pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
+      || (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
+         && piece.first_move = true
   | _ -> false
