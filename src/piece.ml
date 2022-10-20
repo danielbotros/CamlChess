@@ -21,21 +21,21 @@ type piece = {
 
 let piece_to_string piece =
   match piece with
-  | Pawn -> "pawn"
-  | Knight -> "knight"
-  | King -> "king"
-  | Queen -> "queen"
-  | Rook -> "rook"
-  | Bishop -> "bishop"
+  | Pawn -> "p"
+  | Knight -> "n"
+  | King -> "k"
+  | Queen -> "q"
+  | Rook -> "r"
+  | Bishop -> "b"
 
 let string_to_piece str =
   match str with
-  | "pawn" -> Pawn
-  | "knight" -> Knight
-  | "king" -> King
-  | "queen" -> Queen
-  | "rook" -> Rook
-  | "bishop" -> Bishop
+  | "p" -> Pawn
+  | "n" -> Knight
+  | "k" -> King
+  | "q" -> Queen
+  | "r" -> Rook
+  | "b" -> Bishop
   | _ -> failwith "invalid piece_type"
 
 let char_to_int c = Char.code c - Char.code '0'
