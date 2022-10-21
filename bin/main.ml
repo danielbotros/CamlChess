@@ -5,14 +5,14 @@ open State
 
 let new_board =
   [
-    [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
-    [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
+    [ "r"; "n"; "b"; "q"; "k"; "b"; "n"; "r" ];
+    [ "p"; "p"; "p"; "p"; "p"; "p"; "p"; "p" ];
     [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
     [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
     [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
     [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
     [ "p"; "p"; "p"; "p"; "p"; "p"; "p"; "p" ];
-    [ "p"; "p"; "p"; "p"; "p"; "p"; "p"; "p" ];
+    [ "r"; "n"; "b"; "q"; "k"; "b"; "n"; "r" ];
   ]
 
 let print_board lst =
@@ -76,3 +76,15 @@ let main () =
 
 (* Execute the game engine. *)
 let () = main ()
+
+(* Things left to implement: 1. Making sure you can't move ontop of your own
+   piece (clear paths) 2. Printing black and white squares intead of "-" (x+y is
+   even then black else white) 3. Implement capturing (if you move onto another
+   piece with opposite color then capture) 4. Make sure that we use black and
+   white symbols for piece moves instead of letters (adjust pattern matching in
+   piece) 5. Catching errors
+
+   Chess Features Missing: 1. Pawn promotion 2. En passannt 3. Castling 4.
+   Checkmate and Stalemate 5. Graveyard 6. Timer
+
+   QOL Features: 1. Printing possible moves for a piece at a position *)

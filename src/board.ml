@@ -30,7 +30,7 @@ let board_to_list lst =
           List.exists
             (fun a -> Piece.get_position a = Some (char_of_int (x + 96), y))
             lst
-        then "P" :: col (y + 1) (** this only works for pawns*)
+        then (List.find (fun a -> Piece.get_position a = Some (char_of_int (x + 96), y)) lst |> Piece.get_piece_type |> Piece.piece_to_string) :: col (y + 1) (** this only works for pawns*)
         else "-" :: col (y + 1)
       in
       col 1 :: row (x + 1)
