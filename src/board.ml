@@ -11,9 +11,10 @@ let init_board board =
           | h2 :: t2 ->
               if h2 = "-" then col (y + 1) t2
               else
-                Piece.create_piece (Piece.string_to_piece h2)
+                let piece_and_color = Piece.string_to_piece h2 in
+                Piece.create_piece (fst piece_and_color)
                   (Some (char_of_int (x + 96), y))
-                  (Piece.string_to_color "white")
+                  (snd piece_and_color)
                 :: col (y + 1) t2
         in
         col 1 h @ row (x + 1) t
@@ -32,9 +33,11 @@ let board_to_list lst =
             (List.find
                (fun a -> Piece.get_position a = Some (char_of_int (x + 96), y))
                lst
-            |> Piece.get_piece_type |> Piece.piece_to_string)
+            |> Piece.piece_to_string)
             :: col (y + 1)
-          with Not_found -> "-" :: col (y + 1)
+          with Not_found ->
+            let square = if (x + y) mod 2 = 0 then "■" else "□" in
+            square :: col (y + 1)
       in
       col 1 :: row (x + 1)
   in

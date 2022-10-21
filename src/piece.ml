@@ -31,22 +31,34 @@ type piece = {
 }
 
 let piece_to_string piece =
-  match piece with
-  | Pawn -> "p"
-  | Knight -> "n"
-  | King -> "k"
-  | Queen -> "q"
-  | Rook -> "r"
-  | Bishop -> "b"
+  match (piece.piece_type, piece.color) with
+  | Pawn, Black -> "♙"
+  | Pawn, White -> "♟"
+  | Knight, Black -> "♘"
+  | Knight, White -> "♞"
+  | King, Black -> "♔"
+  | King, White -> "♚"
+  | Queen, Black -> "♛"
+  | Queen, White -> "♕"
+  | Rook, Black -> "♖"
+  | Rook, White -> "♜"
+  | Bishop, Black -> "♗"
+  | Bishop, White -> "♝"
 
 let string_to_piece str =
   match str with
-  | "p" -> Pawn
-  | "n" -> Knight
-  | "k" -> King
-  | "q" -> Queen
-  | "r" -> Rook
-  | "b" -> Bishop
+  | "♙" -> (Pawn, Black)
+  | "♟" -> (Pawn, White)
+  | "♘" -> (Knight, Black)
+  | "♞" -> (Knight, White)
+  | "♔" -> (King, Black)
+  | "♚" -> (King, White)
+  | "♕" -> (Queen, White)
+  | "♛" -> (Queen, Black)
+  | "♖" -> (Rook, Black)
+  | "♜" -> (Rook, White)
+  | "♗" -> (Bishop, Black)
+  | "♝" -> (Bishop, White)
   | _ -> failwith "invalid piece_type"
 
 let char_to_int c = Char.code c - Char.code '0'

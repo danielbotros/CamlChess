@@ -5,10 +5,8 @@ Young Zheng
 
 (* Things left to implement:
    1. Making sure you can't move ontop of your own piece (clear paths?)
-   2. Printing black and white squares intead of "-" (x+y is even then black else white)
-   3. Implement capturing (if you move onto another piece with opposite color then capture)
-   4. Make sure that we use black and white symbols for piece moves instead of letters (adjust pattern matching in piece)
-   5. Catching errors
+   2. Implement capturing (if you move onto another piece with opposite color then capture)
+   3. Catching errors
    
    Chess Features Missing:
    1. Pawn promotion

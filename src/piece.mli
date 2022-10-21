@@ -2,8 +2,8 @@ type color
 type piece_type
 type piece
 
-val piece_to_string : piece_type -> string
-val string_to_piece : string -> piece_type
+val piece_to_string : piece -> string
+val string_to_piece : string -> piece_type * color
 val create_piece : piece_type -> (char * int) option -> color -> piece
 val string_to_color : string -> color
 val get_piece_type : piece -> piece_type
