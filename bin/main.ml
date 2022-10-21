@@ -15,11 +15,14 @@ let new_board =
     [ "p"; "p"; "p"; "p"; "p"; "p"; "p"; "p" ];
   ]
 
-let rec print_board = function
-  | [] -> ()
-  | h :: t ->
-      print_endline (String.concat " " h);
-      print_board t
+let print_board lst = 
+  let rec helper c lst = match lst with
+    | [] -> print_endline " ";
+      print_endline "    1 2 3 4 5 6 7 8"
+    | h :: t ->
+        print_endline (String.make 1 c ^  "   " ^ (String.concat " " h));
+        helper (char_of_int (int_of_char c + 1)) t
+  in helper 'a' lst
 
 let rec play_game_helper st =
   print_board (State.board st);

@@ -13,7 +13,7 @@ let string_to_color color =
   | "black" -> Black
   | _ -> failwith "Invalid Color"
 
-type piece_types =
+type piece_type =
   | Pawn
   | Knight
   | King
@@ -24,7 +24,7 @@ type piece_types =
 type position = (char * int) option
 
 type piece = {
-  piece_type : piece_types;
+  piece_type : piece_type;
   position : (char * int) option;
   color : color;
   first_move : bool;
@@ -52,16 +52,11 @@ let string_to_piece str =
 let char_to_int c = Char.code c - Char.code '0'
 
 let create_piece p_type pos col =
-  {
-    piece_type = string_to_piece p_type;
-    position = pos;
-    color = string_to_color col;
-    first_move = true;
-  }
+  { piece_type = p_type; position = pos; color = col; first_move = true }
 
-let get_piece_type piece = piece_to_string piece.piece_type
+let get_piece_type piece = piece.piece_type
 let get_position piece = piece.position
-let get_color piece = color_to_string piece.color
+let get_color piece = piece.color
 let is_first_move piece = piece.first_move
 
 let same_pos piece1 piece2 =
@@ -82,17 +77,19 @@ let valid_pos pos =
   | _ -> false
 
 let move_piece piece pos =
-  { piece with position = Some pos; first_move = false }
+  match pos with
+  | Some p -> { piece with position = Some p; first_move = false }
+  | None -> { piece with position = None; first_move = false }
 
 let pos_of_string str1 : position =
   Some (str1.[0], int_of_char str1.[1] - int_of_char '0')
 
-let string_of_pos (pos : position) =
+let string_of_pos pos =
   match pos with
   | Some (c, i) -> Some (String.make 1 c ^ string_of_int i)
   | None -> None
 
-let valid_pawn_move (pos : position) piece =
+let valid_pawn_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
@@ -100,7 +97,7 @@ let valid_pawn_move (pos : position) piece =
          && piece.first_move = true
   | _ -> false
 
-let valid_knight_move (pos : position) piece =
+let valid_knight_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
@@ -109,7 +106,7 @@ let valid_knight_move (pos : position) piece =
          && c1 - c2 |> abs = 2
   | _ -> false
 
-let valid_king_move (pos : position) piece =
+let valid_king_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
@@ -118,7 +115,7 @@ let valid_king_move (pos : position) piece =
       || (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
   | _ -> false
 
-let valid_queen_move (pos : position) piece =
+let valid_queen_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = (c2 - c1 |> abs)
@@ -128,7 +125,7 @@ let valid_queen_move (pos : position) piece =
          && (r2 |> char_to_int) - (r1 |> char_to_int) = 0
   | _ -> false
 
-let valid_rook_move (pos : position) piece =
+let valid_rook_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
       valid_pos ((r2 |> char_to_int) - (r1 |> char_to_int) |> char_of_int, c2)
@@ -137,7 +134,7 @@ let valid_rook_move (pos : position) piece =
          && (r2 |> char_to_int) - (r1 |> char_to_int) = 0
   | _ -> false
 
-let valid_bishop_move (pos : position) piece =
+let valid_bishop_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = (c2 - c1 |> abs)
