@@ -23,7 +23,7 @@ type object_phrase = string * string
     verb and possibly an object phrase. Invariant: the [object_phrase] carried
     by [Go] must not be empty. *)
 type command =
-  | Go of object_phrase
+  | Move of object_phrase
   | Quit
 
 exception Empty
