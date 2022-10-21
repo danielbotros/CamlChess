@@ -33,3 +33,11 @@ let board_to_list lst =
       col 1 :: row (x + 1)
   in
   row 1
+
+
+let remove_piece (board: Piece.piece list) (piece: Piece.piece) = List.filter (fun x -> x <> piece) board
+let add_piece (board : Piece.piece list) (piece:Piece.piece) = piece :: board
+
+let get_piece (board : Piece.piece list) (pos: (char*int) option) = List.find (fun x-> Piece.get_position x = pos ) board
+
+let move (board: Piece.piece list) (old_pos : (char*int) option) (new_pos : (char*int) option) = let (piece:Piece.piece) = get_piece board old_pos in let piece' = Piece.move_piece piece new_pos in let board' = remove_piece board piece in add_piece board' piece'

@@ -74,7 +74,6 @@ let valid_pos pos =
       Char.code 'a' <= Char.code c
       && Char.code c <= Char.code 'h'
       && i < 8 && i > 1
-  | _ -> false
 
 let move_piece piece pos =
   match pos with
