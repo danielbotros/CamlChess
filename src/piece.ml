@@ -138,3 +138,12 @@ let valid_bishop_move piece pos =
   | Some (r1, c1), Some (r2, c2) ->
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = (c2 - c1 |> abs)
   | _ -> false
+
+let valid_move piece pos =
+  match piece.piece_type with
+  | Pawn -> valid_pawn_move piece pos
+  | Knight -> valid_knight_move piece pos
+  | King -> valid_king_move piece pos
+  | Queen -> valid_queen_move piece pos
+  | Rook -> valid_rook_move piece pos
+  | Bishop -> valid_bishop_move piece pos

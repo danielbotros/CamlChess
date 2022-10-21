@@ -1,6 +1,9 @@
 
 type board = Piece.piece list
 
+
+exception InvalidMove
+
 let init_board board =
   let rec row x = function
     | [ [] ] -> []
@@ -38,6 +41,6 @@ let board_to_list lst =
 let remove_piece (board: Piece.piece list) (piece: Piece.piece) = List.filter (fun x -> x <> piece) board
 let add_piece (board : Piece.piece list) (piece:Piece.piece) = piece :: board
 
-let get_piece (board : Piece.piece list) (pos: (char*int) option) = List.find (fun x-> Piece.get_position x = pos ) board
+let get_piece (board : board) (pos: (char*int) option) = List.find (fun x-> Piece.get_position x = pos ) board
 
-let move (board: Piece.piece list) (old_pos : (char*int) option) (new_pos : (char*int) option) = let (piece:Piece.piece) = get_piece board old_pos in let piece' = Piece.move_piece piece new_pos in let board' = remove_piece board piece in add_piece board' piece'
+let move (board: Piece.piece list) (old_pos : (char*int) option) (new_pos : (char*int) option) : board = let (piece:Piece.piece) = get_piece board old_pos in if Piece.valid_move piece new_pos then let piece' = Piece.move_piece piece new_pos in let board' = remove_piece board piece in add_piece board' piece' else raise InvalidMove

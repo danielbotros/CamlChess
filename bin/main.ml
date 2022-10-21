@@ -15,14 +15,17 @@ let new_board =
     [ "p"; "p"; "p"; "p"; "p"; "p"; "p"; "p" ];
   ]
 
-let print_board lst = 
-  let rec helper c lst = match lst with
-    | [] -> print_endline " ";
-      print_endline "    1 2 3 4 5 6 7 8"
+let print_board lst =
+  let rec helper c lst =
+    match lst with
+    | [] ->
+        print_endline " ";
+        print_endline "    1 2 3 4 5 6 7 8"
     | h :: t ->
-        print_endline (String.make 1 c ^  "   " ^ (String.concat " " h));
+        print_endline (String.make 1 c ^ "   " ^ String.concat " " h);
         helper (char_of_int (int_of_char c + 1)) t
-  in helper 'a' lst
+  in
+  helper 'a' lst
 
 let rec play_game_helper st =
   print_board (State.board st);
@@ -33,10 +36,12 @@ let rec play_game_helper st =
   | exception _ ->
       print_endline "This is not a valid move. Please try again: ";
       play_game_helper st
-  | Go (x, y) ->
+  | Go ((x : string), (y : string)) ->
       print_endline "Valid move!";
-      play_game_helper st
-        (**(State.move (x.[0], int_of_char x.[1]) st (y.[0], int_of_char y.[1]))*)
+      play_game_helper
+        (State.update_state st
+           (Some (x.[0], int_of_char x.[1]))
+           (Some (y.[0], int_of_char y.[1])))
   | Quit ->
       print_endline "Game over. Hope you enjoyed playing!";
       exit 0

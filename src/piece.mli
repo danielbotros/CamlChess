@@ -22,3 +22,4 @@ val valid_king_move : piece -> (char * int) option -> bool
 val valid_queen_move : piece -> (char * int) option -> bool
 val valid_rook_move : piece -> (char * int) option -> bool
 val valid_bishop_move : piece -> (char * int) option -> bool
+val valid_move : piece -> (char * int) option -> bool
