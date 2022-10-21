@@ -29,7 +29,6 @@ let print_board lst =
   helper 'a' lst
 
 let rec play_game_helper st =
-  print_endline "";
   print_board (State.board st);
   print_endline
     "\n\n\
@@ -37,19 +36,15 @@ let rec play_game_helper st =
      desired move or 'quit' to exit:";
   match Command.parse (read_line ()) with
   | exception _ ->
-      print_endline "";
       print_endline "This is not a valid move. Please try again: ";
       play_game_helper st
-  | Go (x, y) -> (
-      try
-        play_game_helper
-          (State.update_state st
-             (Some (x.[0], int_of_char x.[1] - 48))
-             (Some (y.[0], int_of_char y.[1] - 48)))
-      with exn ->
-        print_endline "";
-        print_endline "This is not a valid move. Please try again: ";
-        play_game_helper st)
+  | Go (x, y) ->
+      print_endline "Valid move!";
+      print_endline ("" ^ x ^ "" ^ y);
+      play_game_helper
+        (State.update_state st
+           (Some (x.[0], int_of_char x.[1] - 48))
+           (Some (y.[0], int_of_char y.[1] - 48)))
   | Quit ->
       print_endline "\nGame over. Hope you enjoyed playing!\n";
       exit 0
@@ -61,7 +56,7 @@ let play_game new_board =
 let rec main_helper start =
   match start with
   | "yes" ->
-      print_endline "\n\nWelcome to your Game of Chess! \n";
+      print_endline "\n\nWelcome to your Game of Chess! \n\n";
       play_game new_board
   | "no" ->
       print_endline
@@ -81,15 +76,3 @@ let main () =
 
 (* Execute the game engine. *)
 let () = main ()
-
-(* Things left to implement: 1. Making sure you can't move ontop of your own
-   piece (clear paths) 2. Printing black and white squares intead of "-" (x+y is
-   even then black else white) 3. Implement capturing (if you move onto another
-   piece with opposite color then capture) 4. Make sure that we use black and
-   white symbols for piece moves instead of letters (adjust pattern matching in
-   piece) 5. Catching errors
-
-   Chess Features Missing: 1. Pawn promotion 2. En passannt 3. Castling 4.
-   Checkmate and Stalemate 5. Graveyard 6. Timer
-
-   QOL Features: 1. Printing possible moves for a piece at a position *)
