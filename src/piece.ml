@@ -61,7 +61,7 @@ let string_to_piece str =
   | "♝" -> (Bishop, White)
   | _ -> failwith "invalid piece_type"
 
-let char_to_int c = Char.code c - Char.code '0'
+let char_to_int c = Char.code c - Char.code 'a'
 
 let create_piece p_type pos col =
   { piece_type = p_type; position = pos; color = col; first_move = true }
@@ -85,7 +85,7 @@ let valid_pos pos =
   | c, i ->
       Char.code 'a' <= Char.code c
       && Char.code c <= Char.code 'h'
-      && i < 8 && i > 1
+      && i <= 8 && i >= 1
 
 let move_piece piece pos =
   match pos with
@@ -100,6 +100,12 @@ let string_of_pos pos =
   | Some (c, i) -> Some (String.make 1 c ^ string_of_int i)
   | None -> None
 
+let valid_pawn_attack piece pos =
+  match (piece.position, pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1 && c1 - c2 |> abs = 1
+  | _ -> false
+
 let valid_pawn_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
@@ -108,6 +114,7 @@ let valid_pawn_move piece pos =
       || (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
          && c1 - c2 |> abs = 0
          && piece.first_move = true
+      || valid_pawn_attack piece pos
   | _ -> false
 
 let valid_knight_move piece pos =
@@ -132,7 +139,10 @@ let valid_queen_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = (c2 - c1 |> abs)
-      || valid_pos ((r2 |> char_to_int) - (r1 |> char_to_int) |> char_of_int, c2)
+      || valid_pos
+           ( ((r2 |> char_to_int) - (r1 |> char_to_int) |> abs) + Char.code 'a'
+             |> char_of_int,
+             c2 )
          && c2 - c1 = 0
       || valid_pos (r2, c2 - c1 |> abs)
          && (r2 |> char_to_int) - (r1 |> char_to_int) = 0
@@ -141,7 +151,10 @@ let valid_queen_move piece pos =
 let valid_rook_move piece pos =
   match (piece.position, pos) with
   | Some (r1, c1), Some (r2, c2) ->
-      valid_pos ((r2 |> char_to_int) - (r1 |> char_to_int) |> char_of_int, c2)
+      valid_pos
+        ( ((r2 |> char_to_int) - (r1 |> char_to_int) |> abs) + Char.code 'a'
+          |> char_of_int,
+          c2 )
       && c2 - c1 = 0
       || valid_pos (r2, c2 - c1 |> abs)
          && (r2 |> char_to_int) - (r1 |> char_to_int) = 0

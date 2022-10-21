@@ -4,8 +4,8 @@ Natan Aklilu,
 Young Zheng
 
 (* Things left to implement:
-   1. Making sure you can't move ontop of your own piece (clear paths?)
-   2. Implement capturing (if you move onto another piece with opposite color then capture)
+   1. Making sure you can't move ontop of your own piece and clear paths
+   2. Pawn capturing
    3. Catching errors
    
    Chess Features Missing:
