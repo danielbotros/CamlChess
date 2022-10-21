@@ -65,9 +65,13 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
     if captured_piece = piece' then board''
     else if Piece.get_color piece' = Piece.get_color captured_piece then
       raise InvalidMove
-    else
+    else if
+      (Piece.is_pawn piece' && Piece.valid_pawn_attack piece new_pos)
+      || Piece.is_pawn piece' = false
+    then
       let board''' = remove_piece board'' captured_piece in
       add_piece board''' (Piece.capture_piece captured_piece piece')
+    else raise InvalidMove
   else raise InvalidMove
 
 let graveyard_list = List.filter (fun x -> Piece.get_position x = None)

@@ -70,6 +70,7 @@ let get_piece_type piece = piece.piece_type
 let get_position piece = piece.position
 let get_color piece = piece.color
 let is_first_move piece = piece.first_move
+let is_pawn piece = get_piece_type piece = Pawn
 
 let same_pos piece1 piece2 =
   match (piece1.position, piece2.position) with
