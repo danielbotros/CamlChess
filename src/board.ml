@@ -51,11 +51,30 @@ let add_piece (board : Piece.piece list) (piece : Piece.piece) = piece :: board
 let get_piece (board : board) (pos : (char * int) option) =
   List.find (fun x -> Piece.get_position x = pos) board
 
+(* Do you think we could improve the time efficiency of this?*)
 let move (board : Piece.piece list) (old_pos : (char * int) option)
     (new_pos : (char * int) option) : board =
   let (piece : Piece.piece) = get_piece board old_pos in
   if Piece.valid_move piece new_pos then
     let piece' = Piece.move_piece piece new_pos in
     let board' = remove_piece board piece in
-    add_piece board' piece'
+    let board'' = add_piece board' piece' in
+    let captured_piece =
+      List.find (fun x -> Piece.get_position x = new_pos) (List.rev board'')
+    in
+    if captured_piece = piece' then board''
+    else if Piece.get_color piece' = Piece.get_color captured_piece then
+      raise InvalidMove
+    else if
+      (Piece.is_pawn piece' && Piece.valid_pawn_attack piece new_pos)
+      || Piece.is_pawn piece' = false
+    then
+      let board''' = remove_piece board'' captured_piece in
+      add_piece board''' (Piece.capture_piece captured_piece piece')
+    else raise InvalidMove
   else raise InvalidMove
+
+let graveyard_list = List.filter (fun x -> Piece.get_position x = None)
+
+(* let rec clear_horizontal pos1 pos2 = let clear_vertical pos1 pos2 = let
+   clear_diagonal pos1 pos2 = *)
