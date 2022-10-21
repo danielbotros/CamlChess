@@ -1,3 +1,4 @@
+
 type board = Piece.piece list
 
 let init_board board =

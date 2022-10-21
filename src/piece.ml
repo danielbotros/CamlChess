@@ -88,3 +88,46 @@ let valid_pawn_move (pos : position) piece =
       || (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
          && piece.first_move = true
   | _ -> false
+
+let valid_knight_move (pos : position) piece =
+  match (piece.position, pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
+      && c1 - c2 |> abs = 1
+      || (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
+         && c1 - c2 |> abs = 2
+  | _ -> false
+
+let valid_king_move (pos : position) piece =
+  match (piece.position, pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
+      && c1 - c2 |> abs = 1
+      || c1 - c2 |> abs = 1
+      || (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
+  | _ -> false
+
+let valid_queen_move (pos : position) piece =
+  match (piece.position, pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = (c2 - c1 |> abs)
+      || valid_pos ((r2 |> char_to_int) - (r1 |> char_to_int) |> char_of_int, c2)
+         && c2 - c1 = 0
+      || valid_pos (r2, c2 - c1 |> abs)
+         && (r2 |> char_to_int) - (r1 |> char_to_int) = 0
+  | _ -> false
+
+let valid_rook_move (pos : position) piece =
+  match (piece.position, pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      valid_pos ((r2 |> char_to_int) - (r1 |> char_to_int) |> char_of_int, c2)
+      && c2 - c1 = 0
+      || valid_pos (r2, c2 - c1 |> abs)
+         && (r2 |> char_to_int) - (r1 |> char_to_int) = 0
+  | _ -> false
+
+let valid_bishop_move (pos : position) piece =
+  match (piece.position, pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = (c2 - c1 |> abs)
+  | _ -> false
