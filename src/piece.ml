@@ -2,6 +2,17 @@ type color =
   | White
   | Black
 
+let color_to_string color =
+  match color with
+  | White -> "White"
+  | Black -> "Black"
+
+let string_to_color color =
+  match color with
+  | "white" -> White
+  | "black" -> Black
+  | _ -> failwith "Invalid Color"
+
 type piece_types =
   | Pawn
   | Knight
@@ -14,7 +25,7 @@ type position = (char * int) option
 
 type piece = {
   piece_type : piece_types;
-  position : position;
+  position : (char * int) option;
   color : color;
   first_move : bool;
 }
@@ -44,13 +55,13 @@ let create_piece p_type pos col =
   {
     piece_type = string_to_piece p_type;
     position = pos;
-    color = col;
+    color = string_to_color col;
     first_move = true;
   }
 
-let get_piece_type piece = piece.piece_type
+let get_piece_type piece = piece_to_string piece.piece_type
 let get_position piece = piece.position
-let get_color piece = piece.color
+let get_color piece = color_to_string piece.color
 let is_first_move piece = piece.first_move
 
 let same_pos piece1 piece2 =

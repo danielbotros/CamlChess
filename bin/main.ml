@@ -24,7 +24,7 @@ let rec print_board = function
 let rec play_game_helper st =
   print_board (State.board st);
   print_endline
-    "Enter 'move' followed by starting position and final position of the \
+    "Enter 'go' followed by starting position and final position of the \
      desired move or 'quit' to exit:";
   match Command.parse (read_line ()) with
   | exception _ ->
