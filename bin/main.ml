@@ -11,8 +11,8 @@ let new_board =
     [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
     [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
     [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
-    [ "♜"; "♞"; "♝"; "♕"; "♚"; "♝"; "♞"; "♜" ];
     [ "♟"; "♟"; "♟"; "♟"; "♟"; "♟"; "♟"; "♟" ];
+    [ "♜"; "♞"; "♝"; "♕"; "♚"; "♝"; "♞"; "♜" ];
   ]
 
 let print_board lst =
@@ -33,14 +33,14 @@ let rec play_game_helper st =
   print_board (State.board st);
   print_endline
     "\n\n\
-     Enter 'go' followed by starting position and final position of the \
+     Enter 'move' followed by starting position and final position of the \
      desired move or 'quit' to exit:";
   match Command.parse (read_line ()) with
   | exception _ ->
       print_endline "";
       print_endline "This is not a valid move. Please try again: ";
       play_game_helper st
-  | Go (x, y) -> (
+  | Move (x, y) -> (
       try
         play_game_helper
           (State.update_state st
