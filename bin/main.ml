@@ -29,6 +29,7 @@ let print_board lst =
   helper 'a' lst
 
 let rec play_game_helper st =
+  print_endline "";
   print_board (State.board st);
   print_endline
     "\n\n\
@@ -36,15 +37,19 @@ let rec play_game_helper st =
      desired move or 'quit' to exit:";
   match Command.parse (read_line ()) with
   | exception _ ->
+      print_endline "";
       print_endline "This is not a valid move. Please try again: ";
       play_game_helper st
-  | Go (x, y) ->
-      print_endline "Valid move!";
-      print_endline ("" ^ x ^ "" ^ y);
-      play_game_helper
-        (State.update_state st
-           (Some (x.[0], int_of_char x.[1] - 48))
-           (Some (y.[0], int_of_char y.[1] - 48)))
+  | Go (x, y) -> (
+      try
+        play_game_helper
+          (State.update_state st
+             (Some (x.[0], int_of_char x.[1] - 48))
+             (Some (y.[0], int_of_char y.[1] - 48)))
+      with exn ->
+        print_endline "";
+        print_endline "This is not a valid move. Please try again: ";
+        play_game_helper st)
   | Quit ->
       print_endline "\nGame over. Hope you enjoyed playing!\n";
       exit 0
@@ -56,7 +61,7 @@ let play_game new_board =
 let rec main_helper start =
   match start with
   | "yes" ->
-      print_endline "\n\nWelcome to your Game of Chess! \n\n";
+      print_endline "\n\nWelcome to your Game of Chess! \n";
       play_game new_board
   | "no" ->
       print_endline
