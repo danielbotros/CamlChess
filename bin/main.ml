@@ -40,10 +40,11 @@ let rec play_game_helper st =
       play_game_helper st
   | Go (x, y) ->
       print_endline "Valid move!";
+      print_endline ("" ^ x ^ "" ^ y);
       play_game_helper
         (State.update_state st
-           (Some (x.[0], int_of_char x.[1]))
-           (Some (y.[0], int_of_char y.[1])))
+           (Some (x.[0], int_of_char x.[1] - 48))
+           (Some (y.[0], int_of_char y.[1] - 48)))
   | Quit ->
       print_endline "\nGame over. Hope you enjoyed playing!\n";
       exit 0
