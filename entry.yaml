@@ -1,0 +1,28 @@
+---
+# Members of your group.
+group:
+  - name: Young Zheng
+    netid: yz486
+  - name: Daniel Botros
+    netid: dab463
+  - name: Francis Bahk
+    netid: feb47
+  - name: Natan Aklilu
+    netid: nta6
+# Your PM.
+pm:
+  name: Tuan Anh Dasng
+  netid: td296
+# Set to false if you don't want your gallery entry to be public.
+publish: true
+# Pithy title
+title: "Chess in Terminal (CIT)"
+# OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
+git-repo: "https://github.coecis.cornell.edu/yz486/chess"
+# If you have no demo screencast, replace the url string with an empty string ""
+demo-video-url: ""
+desc: >
+  Our project is a simulation of chess which implements all of its rules in a terminal
+  user interface. There will be two ways to play the game: you can play against a real 
+  opponent or you can play against our AI. The multiplayer component will be on the 
+  local computer. 
