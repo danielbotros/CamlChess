@@ -9,7 +9,7 @@ let init_board board =
           | [] -> []
           | h2 :: t2 ->
               if h2 = "-" then col (y + 1) t2
-              else Piece.create_piece h2 x y :: col (y + 1) t2
+              else Piece.create_piece h2 (Some (char_of_int (x + 96), y)) "white":: col (y + 1) t2
         in
         col 1 h @ row (x + 1) t
     | _ -> []
