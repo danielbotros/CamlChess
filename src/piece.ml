@@ -71,6 +71,11 @@ let get_position piece = piece.position
 let get_color piece = piece.color
 let is_first_move piece = piece.first_move
 let is_pawn piece = get_piece_type piece = Pawn
+let is_king piece = get_piece_type piece = King
+let is_queen piece = get_piece_type piece = Queen
+let is_knight piece = get_piece_type piece = Knight
+let is_bishop piece = get_piece_type piece = Bishop
+let is_rook piece = get_piece_type piece = Rook
 
 let same_pos piece1 piece2 =
   match (piece1.position, piece2.position) with
@@ -175,3 +180,33 @@ let valid_move piece pos =
   | Queen -> valid_queen_move piece pos
   | Rook -> valid_rook_move piece pos
   | Bishop -> valid_bishop_move piece pos
+
+(* let is_in_range (pos1 : (char * int) option) (pos2 : (char * int) option)
+   (pos3 : (char * int) option) = match (pos1, pos2, pos3) with | Some (r1, c1),
+   Some (r2, c2), Some (r3, c3) -> c1 < c2 && c2 < c3 && r1 |> char_to_int < (r2
+   |> char_to_int) && r2 |> char_to_int < (r3 |> char_to_int) | _ -> false *)
+
+let is_in_vertical (pos1 : (char * int) option) (pos2 : (char * int) option)
+    (pos3 : (char * int) option) =
+  match (pos1, pos2, pos3) with
+  | Some (r1, c1), Some (r2, c2), Some (r3, c3) ->
+      c1 = c2 && c2 = c3 && (r1 < r2 || r2 < r3)
+  | _ -> false
+
+let is_in_horizontal (pos1 : (char * int) option) (pos2 : (char * int) option)
+    (pos3 : (char * int) option) =
+  match (pos1, pos2, pos3) with
+  | Some (r1, c1), Some (r2, c2), Some (r3, c3) ->
+      r2 = r1 && r2 = r3 && (c1 < c2 || c2 < c3)
+  | _ -> false
+
+let is_in_diagonal (pos1 : (char * int) option) (pos2 : (char * int) option)
+    (pos3 : (char * int) option) =
+  match (pos1, pos2, pos3) with
+  | Some (r1, c1), Some (r2, c2), Some (r3, c3) ->
+      (r2 |> char_to_int) - (r1 |> char_to_int) = c1 - c2
+      && (r3 |> char_to_int) - (r2 |> char_to_int) = c3 - c2
+      && r1 < r2 && r2 < r3
+      || ((r2 < r1 && r2 > r3) && c1 < c2 && c2 < c3)
+      || (c2 < c1 && c2 > c3)
+  | _ -> false

@@ -51,11 +51,49 @@ let add_piece (board : Piece.piece list) (piece : Piece.piece) = piece :: board
 let get_piece (board : board) (pos : (char * int) option) =
   List.find (fun x -> Piece.get_position x = pos) board
 
+let clear_vertical board piece old_pos new_pos =
+  let board' =
+    List.filter
+      (fun x -> Piece.is_in_vertical old_pos (Piece.get_position x) new_pos)
+      board
+  in
+  List.length board' = 1
+
+let clear_horizontal board piece old_pos new_pos =
+  let board' =
+    List.filter
+      (fun x -> Piece.is_in_horizontal old_pos (Piece.get_position x) new_pos)
+      board
+  in
+  List.length board' = 1
+
+let clear_diagonal board piece old_pos new_pos =
+  let board' =
+    List.filter
+      (fun x -> Piece.is_in_diagonal old_pos (Piece.get_position x) new_pos)
+      board
+  in
+  List.length board' = 1
+
+let clear_path board old_pos piece new_pos =
+  if Piece.is_rook piece then
+    clear_horizontal board piece old_pos new_pos
+    || clear_vertical board piece old_pos new_pos
+  else if Piece.is_bishop piece then clear_diagonal board piece old_pos new_pos
+  else if Piece.is_queen piece then
+    clear_diagonal board piece old_pos new_pos
+    || clear_horizontal board piece old_pos new_pos
+    || clear_vertical board piece old_pos new_pos
+  else true
+
 (* Do you think we could improve the time efficiency of this?*)
 let move (board : Piece.piece list) (old_pos : (char * int) option)
     (new_pos : (char * int) option) : board =
   let (piece : Piece.piece) = get_piece board old_pos in
-  if Piece.valid_move piece new_pos then
+  if
+    Piece.valid_move piece new_pos
+    && clear_path board (Piece.get_position piece) piece new_pos
+  then
     let piece' = Piece.move_piece piece new_pos in
     let board' = remove_piece board piece in
     let board'' = add_piece board' piece' in
@@ -75,6 +113,3 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
   else raise InvalidMove
 
 let graveyard_list = List.filter (fun x -> Piece.get_position x = None)
-
-(* let rec clear_horizontal pos1 pos2 = let clear_vertical pos1 pos2 = let
-   clear_diagonal pos1 pos2 = *)
