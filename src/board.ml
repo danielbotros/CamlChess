@@ -46,70 +46,80 @@ let board_to_list lst =
 let remove_piece (board : Piece.piece list) (piece : Piece.piece) =
   List.filter (fun x -> x <> piece) board
 
-let add_piece (board : Piece.piece list) (piece : Piece.piece) = piece :: board
+let add_piece (board : Piece.piece list) (piece : Piece.piece) =
+  board @ [ piece ]
 
 let get_piece (board : board) (pos : (char * int) option) =
   List.find (fun x -> Piece.get_position x = pos) board
 
-let clear_vertical board piece old_pos new_pos =
+let clear_vertical board old_pos new_pos =
   let board' =
     List.filter
-      (fun x -> Piece.is_in_vertical old_pos (Piece.get_position x) new_pos)
+      (fun x ->
+        Validate.is_in_vertical_path old_pos (Piece.get_position x) new_pos)
       board
   in
-  List.length board' = 1
+  List.length board' = 0
 
-let clear_horizontal board piece old_pos new_pos =
+let clear_horizontal board old_pos new_pos =
   let board' =
     List.filter
-      (fun x -> Piece.is_in_horizontal old_pos (Piece.get_position x) new_pos)
+      (fun x ->
+        Validate.is_in_horizontal_path old_pos (Piece.get_position x) new_pos)
       board
   in
-  List.length board' = 1
+  List.length board' = 0
 
-let clear_diagonal board piece old_pos new_pos =
+let clear_diagonal board old_pos new_pos =
   let board' =
     List.filter
-      (fun x -> Piece.is_in_diagonal old_pos (Piece.get_position x) new_pos)
+      (fun x ->
+        Validate.is_in_diagonal_path old_pos (Piece.get_position x) new_pos)
       board
   in
-  List.length board' = 1
+  List.length board' = 0
 
 let clear_path board old_pos piece new_pos =
   if Piece.is_rook piece then
-    clear_horizontal board piece old_pos new_pos
-    || clear_vertical board piece old_pos new_pos
-  else if Piece.is_bishop piece then clear_diagonal board piece old_pos new_pos
+    clear_horizontal board old_pos new_pos
+    || clear_vertical board old_pos new_pos
+  else if Piece.is_bishop piece then clear_diagonal board old_pos new_pos
   else if Piece.is_queen piece then
-    clear_diagonal board piece old_pos new_pos
-    || clear_horizontal board piece old_pos new_pos
-    || clear_vertical board piece old_pos new_pos
-  else true
+    clear_diagonal board old_pos new_pos
+    || clear_horizontal board old_pos new_pos
+    || clear_vertical board old_pos new_pos
+  else Piece.is_knight piece || Piece.is_king piece || Piece.is_pawn piece
 
-(* Do you think we could improve the time efficiency of this?*)
 let move (board : Piece.piece list) (old_pos : (char * int) option)
     (new_pos : (char * int) option) : board =
-  let (piece : Piece.piece) = get_piece board old_pos in
+  let piece = get_piece board old_pos in
+  let captured_piece_list =
+    List.filter
+      (fun x ->
+        Piece.get_position x = new_pos
+        &&
+        if Piece.get_color x = Piece.get_color piece then raise InvalidMove
+        else true)
+      board
+  in
   if
     Piece.valid_move piece new_pos
-    && clear_path board (Piece.get_position piece) piece new_pos
+    && clear_path board old_pos piece new_pos
+    && (Piece.is_pawn piece
+        && List.length captured_piece_list = 1
+        && Validate.valid_pawn_attack old_pos new_pos
+       || (Piece.is_pawn piece && List.length captured_piece_list = 0)
+       || Piece.is_pawn piece = false)
   then
     let piece' = Piece.move_piece piece new_pos in
-    let board' = remove_piece board piece in
-    let board'' = add_piece board' piece' in
-    let captured_piece =
-      List.find (fun x -> Piece.get_position x = new_pos) (List.rev board'')
-    in
-    if captured_piece = piece' then board''
-    else if Piece.get_color piece' = Piece.get_color captured_piece then
-      raise InvalidMove
-    else if
-      (Piece.is_pawn piece' && Piece.valid_pawn_attack piece new_pos)
-      || Piece.is_pawn piece' = false
-    then
-      let board''' = remove_piece board'' captured_piece in
-      add_piece board''' (Piece.capture_piece captured_piece piece')
-    else raise InvalidMove
+    if List.length captured_piece_list = 1 then
+      let captured_piece = List.nth captured_piece_list 0 in
+      let captured_piece_updated = Piece.capture_piece captured_piece piece' in
+      let board' = remove_piece board captured_piece in
+      let board'' = add_piece board' captured_piece_updated in
+      let board''' = remove_piece board'' piece in
+      add_piece board''' piece'
+    else add_piece (remove_piece board piece) piece'
   else raise InvalidMove
 
 let graveyard_list = List.filter (fun x -> Piece.get_position x = None)
