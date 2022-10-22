@@ -4,10 +4,8 @@ Natan Aklilu,
 Young Zheng
 
 (* Things left to implement:
-   1. Clear paths (make sure that only knights can move over other pieces)
-   3. Catching errors
-   4. Turns (may need to modify move validation to account for whose turn it is / make sure you can't move backwards)
-   5. Flip row and columns
+   1. Turns (may need to modify move validation to account for whose turn it is / make sure you can't move backwards)
+   2. Swap rols and cols
    
    Chess Features Missing:
    1. Pawn promotion
