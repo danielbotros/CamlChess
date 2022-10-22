@@ -61,7 +61,7 @@ let play_game new_board =
 let rec main_helper start =
   match start with
   | "yes" ->
-      print_endline "\n\nWelcome to your Game of Chess! \n";
+      print_endline "\n\n♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
       play_game new_board
   | "no" ->
       print_endline
@@ -74,7 +74,7 @@ let rec main_helper start =
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  print_endline "\n\nWelcome to chess!\n";
+  print_endline "\n\n         Welcome to chess!\n";
   print_endline "Do you want to start a game? (yes/no) \n";
   print_string "> ";
   main_helper (read_line ())
