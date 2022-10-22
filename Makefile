@@ -18,12 +18,12 @@ play:
 	OCAMLRUNPARAM=b dune exec bin/main.exe
 
 zip:
-	rm -f adventure.zip
-	zip -r adventure.zip . -x@exclude.lst
+	rm -f chess.zip
+	zip -r chess.zip . -x@exclude.lst
 
 clean:
 	dune clean
-	rm -f adventure.zip
+	rm -f chess.zip
 
 doc:
 	dune build @doc
