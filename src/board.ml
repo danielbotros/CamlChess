@@ -59,7 +59,7 @@ let clear_vertical board old_pos new_pos =
         Validate.is_in_vertical_path old_pos (Piece.get_position x) new_pos)
       board
   in
-  List.length board' = 0
+  List.length board' = 0 && Validate.vertical_move old_pos new_pos
 
 let clear_horizontal board old_pos new_pos =
   let board' =
@@ -68,7 +68,7 @@ let clear_horizontal board old_pos new_pos =
         Validate.is_in_horizontal_path old_pos (Piece.get_position x) new_pos)
       board
   in
-  List.length board' = 0
+  List.length board' = 0 && Validate.horizontal_move old_pos new_pos
 
 let clear_diagonal board old_pos new_pos =
   let board' =
@@ -77,12 +77,12 @@ let clear_diagonal board old_pos new_pos =
         Validate.is_in_diagonal_path old_pos (Piece.get_position x) new_pos)
       board
   in
-  List.length board' = 0
+  List.length board' = 0 && Validate.diagonal_move old_pos new_pos
 
 let clear_path board old_pos piece new_pos =
   if Piece.is_rook piece then
-    clear_horizontal board old_pos new_pos
-    || clear_vertical board old_pos new_pos
+    clear_vertical board old_pos new_pos
+    || clear_horizontal board old_pos new_pos
   else if Piece.is_bishop piece then clear_diagonal board old_pos new_pos
   else if Piece.is_queen piece then
     clear_diagonal board old_pos new_pos

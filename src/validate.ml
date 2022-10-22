@@ -20,6 +20,22 @@ let valid_pos pos =
       && Char.code c <= Char.code 'h'
       && i <= 8 && i >= 1
 
+let vertical_move pos1 pos2 =
+  match (pos2, pos1) with
+  | Some (r1, c1), Some (r2, c2) -> c2 = c1
+  | _ -> false
+
+let diagonal_move pos1 pos2 =
+  match (pos1, pos2) with
+  | Some (r1, c1), Some (r2, c2) ->
+      c2 - c1 = (r1 |> char_to_int) - (r2 |> char_to_int)
+  | _ -> false
+
+let horizontal_move pos1 pos2 =
+  match (pos1, pos2) with
+  | Some (r1, c1), Some (r2, c2) -> r2 = r1
+  | _ -> false
+
 let valid_pawn_attack pos1 pos2 =
   match (pos1, pos2) with
   | Some (r1, c1), Some (r2, c2) ->

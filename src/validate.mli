@@ -2,6 +2,9 @@ val same_pos : (char * int) option -> (char * int) option -> bool
 val valid_pos : char * int -> bool
 val pos_of_string : string -> (char * int) option
 val string_of_pos : (char * int) option -> string option
+val vertical_move : (char * int) option -> (char * int) option -> bool
+val horizontal_move : (char * int) option -> (char * int) option -> bool
+val diagonal_move : (char * int) option -> (char * int) option -> bool
 val valid_pawn_attack : (char * int) option -> (char * int) option -> bool
 val valid_pawn_move : (char * int) option -> (char * int) option -> bool
 val valid_knight_move : (char * int) option -> (char * int) option -> bool

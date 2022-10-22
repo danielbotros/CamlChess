@@ -1,5 +1,3 @@
-open Validate
-
 type color =
   | White
   | Black
