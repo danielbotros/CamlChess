@@ -33,8 +33,8 @@ let rec play_game_helper st =
   print_board (State.board st);
   print_endline
     "\n\n\
-     Enter 'move' followed by starting position and final position of the \
-     desired move or 'quit' to exit:";
+     Enter 'move' followed by starting position and final position\n\
+     of the desired move (for example: move g2 e2) or 'quit' to exit:";
   match Command.parse (read_line ()) with
   | exception _ ->
       print_endline "";

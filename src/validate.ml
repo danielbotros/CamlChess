@@ -28,7 +28,7 @@ let vertical_move pos1 pos2 =
 let diagonal_move pos1 pos2 =
   match (pos1, pos2) with
   | Some (r1, c1), Some (r2, c2) ->
-      c2 - c1 = (r1 |> char_to_int) - (r2 |> char_to_int)
+      c2 - c1 |> abs = ((r1 |> char_to_int) - (r2 |> char_to_int) |> abs)
   | _ -> false
 
 let horizontal_move pos1 pos2 =
