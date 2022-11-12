@@ -46,8 +46,7 @@ let board_to_list lst =
 let remove_piece (board : Piece.piece list) (piece : Piece.piece) =
   List.filter (fun x -> x <> piece) board
 
-let add_piece (board : Piece.piece list) (piece : Piece.piece) =
-  board @ [ piece ]
+let add_piece (board : Piece.piece list) (piece : Piece.piece) = piece :: board
 
 let get_piece (board : board) (pos : (char * int) option) =
   List.find (fun x -> Piece.get_position x = pos) board
@@ -114,7 +113,7 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
     let piece' = Piece.move_piece piece new_pos in
     if List.length captured_piece_list = 1 then
       let captured_piece = List.nth captured_piece_list 0 in
-      let captured_piece_updated = Piece.capture_piece captured_piece piece' in
+      let captured_piece_updated = Piece.capture_piece captured_piece in
       let board' = remove_piece board captured_piece in
       let board'' = add_piece board' captured_piece_updated in
       let board''' = remove_piece board'' piece in

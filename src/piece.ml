@@ -7,8 +7,8 @@ let color_to_string color =
   | White -> "White"
   | Black -> "Black"
 
-let string_to_color color =
-  match color with
+let string_to_color str =
+  match str with
   | "white" -> White
   | "black" -> Black
   | _ -> failwith "Invalid Color"
@@ -74,7 +74,7 @@ let is_queen piece = get_piece_type piece = Queen
 let is_knight piece = get_piece_type piece = Knight
 let is_bishop piece = get_piece_type piece = Bishop
 let is_rook piece = get_piece_type piece = Rook
-let capture_piece piece attacking_piece = { piece with position = None }
+let capture_piece piece = { piece with position = None }
 
 let move_piece piece pos =
   match pos with

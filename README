@@ -4,19 +4,19 @@ Natan Aklilu,
 Young Zheng
 
 (* Things left to implement:
-   1. Turns (may need to modify move validation to account for whose turn it is / make sure you can't move backwards)
-   2. Swap rols and cols
+   1. Turns (may need to modify move validation to account for whose turn it is / make sure you can't move backwards) - Young
+   2. Swap rols and cols -- Daniel
    
    Chess Features Missing:
-   1. Pawn promotion
-   2. En passant
-   3. Castling
-   4. Checkmate and Stalemate
-   5. Graveyard
-   6. Timer
+   1. Pawn promotion - Natan, Francis
+   2. En passant - Natan, Francis
+   3. Castling - Francis 
+   4. Checkmate and Stalemate - Young
+   5. Graveyard - Daniel
+   6. Timer - Daniel
    
    QOL Features:
    1. Printing possible moves for a piece at a position
    2. Single and Two player mode
-   3. AI (Negamax Algorithm)
+   3. AI (Negamax Algorithm) - Daniel 
    *)

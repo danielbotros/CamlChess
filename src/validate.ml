@@ -1,12 +1,12 @@
 let char_to_int c = Char.code c - Char.code 'a'
 
-let pos_of_string str1 : (char * int) option =
-  Some (str1.[0], int_of_char str1.[1] - int_of_char '0')
+let pos_of_string str : (char * int) option =
+  Some (str.[0], int_of_char str.[1] - int_of_char '0')
 
 let string_of_pos pos =
   match pos with
-  | Some (c, i) -> Some (String.make 1 c ^ string_of_int i)
-  | None -> None
+  | Some (c, i) -> String.make 1 c ^ string_of_int i
+  | None -> failwith "Invalid pos"
 
 let same_pos pos1 pos2 =
   match (pos1, pos2) with

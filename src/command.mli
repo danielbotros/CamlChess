@@ -14,11 +14,6 @@ type object_phrase = string * string
     - If the player command is ["go e2     e4"], then the object phrase is again
       [\["e2"; "e4"\]]. *)
 
-(* Note that the backslashes in the OCamldoc comment above are inserted by
-   OCamlformat for sake of the HTML version of the documentation. When reading
-   the source code of the comment in this file, pretend that the backslashes do
-   not exist. That is, the object phrase is simply [["e2"; "e4"]]. *)
-
 (** The type [command] represents a player command that is decomposed into a
     verb and possibly an object phrase. Invariant: the [object_phrase] carried
     by [Go] must not be empty. *)
