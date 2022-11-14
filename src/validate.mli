@@ -5,7 +5,7 @@ val char_to_int : char -> int
 val pos_of_string : string -> (char * int) option
 (** [pos_of_string str] is the position represented by [str]. *)
 
-val string_of_pos : (char * int) option -> string option
+val string_of_pos : (char * int) option -> string
 (** [string_of_pos pos] is the string represenation of [pos]. Raises: [Failure]
     is [pos] is not a valid position. *)
 
