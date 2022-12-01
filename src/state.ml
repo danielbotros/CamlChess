@@ -8,7 +8,6 @@ let get_color p = p |> Piece.get_color |> Piece.color_to_string
 
 let rec valid_move { board; past_moves; turn } pos =
   let color = if turn mod 2 = 0 then "White" else "Black" in
-  print_endline color;
   checkmate board color;
   valid_pos board color pos
 
