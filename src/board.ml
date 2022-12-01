@@ -1,5 +1,7 @@
 type board = Piece.piece list
 
+let (empty : Piece.piece list) = []
+
 exception InvalidMove
 
 let init_board board =
@@ -43,7 +45,7 @@ let board_to_list lst =
   in
   row 1
 
-let (empty : Piece.piece list) = []
+let get_pieces (board : Piece.piece list) = board
 
 let remove_piece (board : Piece.piece list) (piece : Piece.piece) =
   List.filter (fun x -> x <> piece) board
