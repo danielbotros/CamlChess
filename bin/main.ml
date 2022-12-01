@@ -15,18 +15,45 @@ let new_board =
     [ "♜"; "♞"; "♝"; "♛"; "♚"; "♝"; "♞"; "♜" ];
   ]
 
+let coordinate_converter_row ltr =
+  match ltr with
+  | 'a' -> "1"
+  | 'b' -> "2"
+  | 'c' -> "3"
+  | 'd' -> "4"
+  | 'e' -> "5"
+  | 'f' -> "6"
+  | 'g' -> "7"
+  | 'h' -> "8"
+  | _ -> failwith "Impossible"
+
+let coordinate_converter_col nmbr =
+  match nmbr with
+  | '1' -> "h"
+  | '2' -> "g"
+  | '3' -> "f"
+  | '4' -> "e"
+  | '5' -> "d"
+  | '6' -> "c"
+  | '7' -> "b"
+  | '8' -> "a"
+  | _ -> failwith "Impossible"
+
+let coordinate_converter (cmd : string) =
+  coordinate_converter_col cmd.[1] ^ coordinate_converter_row cmd.[0]
+
 let print_board lst =
   let rec helper c lst =
     match lst with
     | [] ->
         print_endline " ";
-        print_endline "              1 2 3 4 5 6 7 8"
+        print_endline "              a b c d e f g h"
     | h :: t ->
         print_endline
           ("          " ^ String.make 1 c ^ "   " ^ String.concat " " h);
-        helper (char_of_int (int_of_char c + 1)) t
+        helper (char_of_int (int_of_char c - 1)) t
   in
-  helper 'a' lst
+  helper '8' lst
 
 let rec play_game_helper st =
   print_endline "";
@@ -41,11 +68,13 @@ let rec play_game_helper st =
       print_endline "This is not a valid move. Please try again: ";
       play_game_helper st
   | Move (x, y) -> (
+      let x' = coordinate_converter x in
+      let y' = coordinate_converter y in
       try
         play_game_helper
           (State.update_state st
-             (Some (x.[0], int_of_char x.[1] - 48))
-             (Some (y.[0], int_of_char y.[1] - 48)))
+             (Some (x'.[0], int_of_char x'.[1] - 48))
+             (Some (y'.[0], int_of_char y'.[1] - 48)))
       with exn ->
         print_endline "";
         print_endline "This is not a valid move. Please try again: ";
