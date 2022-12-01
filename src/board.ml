@@ -1,5 +1,7 @@
 type board = Piece.piece list
 
+let (empty : Piece.piece list) = []
+
 exception InvalidMove
 
 let init_board board =
@@ -43,7 +45,7 @@ let board_to_list lst =
   in
   row 1
 
-let (empty : Piece.piece list) = []
+let get_pieces (board : Piece.piece list) = board
 
 let remove_piece (board : Piece.piece list) (piece : Piece.piece) =
   List.filter (fun x -> x <> piece) board
@@ -127,4 +129,6 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
   else raise InvalidMove
 
 let graveyard (board : Piece.piece list) =
-  List.filter (fun x -> Piece.get_position x = None) board
+  List.map
+    (fun x -> Piece.piece_to_string x)
+    (List.filter (fun x -> Piece.get_position x = None) board)
