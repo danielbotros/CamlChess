@@ -67,7 +67,9 @@ let valid_king_move pos1 pos2 =
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
       && c1 - c2 |> abs = 1
       || c1 - c2 |> abs = 1
+         && (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 0
       || (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 1
+         && c1 - c2 |> abs = 0
   | _ -> false
 
 let valid_queen_move pos1 pos2 =
