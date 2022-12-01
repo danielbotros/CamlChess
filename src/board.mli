@@ -4,6 +4,9 @@ val init_board : string list list -> board
 (** [init_board board] is the board represented by the current board displayed
     on the GUI. *)
 
+val get_pieces : board -> Piece.piece list
+(** [get_pieces board] returns all of the pieces on the board **)
+
 val board_to_list : board -> string list list
 (** [board_to_list lst] is the GUI represenation of the current board. *)
 

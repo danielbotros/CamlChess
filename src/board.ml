@@ -43,6 +43,8 @@ let board_to_list lst =
   in
   row 1
 
+let get_pieces board = board
+
 let remove_piece (board : Piece.piece list) (piece : Piece.piece) =
   List.filter (fun x -> x <> piece) board
 
