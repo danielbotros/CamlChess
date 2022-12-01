@@ -72,12 +72,24 @@ let rec play_game_helper st =
       let y' = coordinate_converter y in
       try
         play_game_helper
-          (State.update_state st
+          (State.update_state false st
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
       with exn ->
         print_endline "";
         print_endline "This is not a valid move. Please try again: ";
+        play_game_helper st)
+  | Castle (x, y) -> (
+      let x' = coordinate_converter x in
+      let y' = coordinate_converter y in
+      try
+        play_game_helper
+          (State.update_state true st
+             (Some (x'.[0], int_of_char x'.[1] - 48))
+             (Some (y'.[0], int_of_char y'.[1] - 48)))
+      with exn ->
+        print_endline "";
+        print_endline "This is not a valid castle. Please try again: ";
         play_game_helper st)
   | Quit ->
       print_endline "\nGame over. Hope you enjoyed playing!\n";

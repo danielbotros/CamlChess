@@ -4,6 +4,7 @@ type object_phrase = string * string
 
 type command =
   | Move of object_phrase
+  | Castle of object_phrase
   | Quit
 
 exception Empty
@@ -18,7 +19,7 @@ let parse str =
   | h :: t -> begin
       match String.lowercase_ascii h with
       | "quit" -> if t <> [] then raise Malformed else Quit
-      | "move" -> begin
+      | ("move" | "castle") as cmd -> begin
           match t with
           | [] -> raise Malformed
           | [ _ ] -> raise Malformed
@@ -36,7 +37,9 @@ let parse str =
                 && int_of_char moveto.[1] - int_of_char '0' >= 1
                 && int_of_char moveto.[1] - int_of_char '0' <= 8
                 && String.length moveto = 2
-              then Move (movefrom, moveto)
+              then
+                if cmd = "move" then Move (movefrom, moveto)
+                else Castle (movefrom, moveto)
               else raise Malformed
           | _ -> raise Malformed
         end

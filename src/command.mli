@@ -19,6 +19,7 @@ type object_phrase = string * string
     by [Go] must not be empty. *)
 type command =
   | Move of object_phrase
+  | Castle of object_phrase
   | Quit
 
 exception Empty

@@ -69,3 +69,7 @@ val move_piece : piece -> (char * int) option -> piece
 val valid_move : piece -> (char * int) option -> bool
 (** [valid_move piece pos] is true if moving [piece] to [pos] is valid, false
     otherwise. *)
+
+val valid_castle : piece -> (char * int) option -> bool
+(** [valid_move piece pos] is true if moving [piece] to [pos] is valid, false
+    otherwise. *)
