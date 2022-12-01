@@ -43,6 +43,8 @@ let board_to_list lst =
   in
   row 1
 
+let (empty : Piece.piece list) = []
+
 let remove_piece (board : Piece.piece list) (piece : Piece.piece) =
   List.filter (fun x -> x <> piece) board
 
@@ -121,4 +123,5 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
     else add_piece (remove_piece board piece) piece'
   else raise InvalidMove
 
-let graveyard_list = List.filter (fun x -> Piece.get_position x = None)
+let graveyard (board : Piece.piece list) =
+  List.filter (fun x -> Piece.get_position x = None) board
