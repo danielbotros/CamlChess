@@ -1,5 +1,7 @@
 type board = Piece.piece list
 
+let (empty : Piece.piece list) = []
+
 exception InvalidMove
 
 let init_board board =
@@ -43,8 +45,7 @@ let board_to_list lst =
   in
   row 1
 
-let get_pieces board = board
-let (empty : Piece.piece list) = []
+let get_pieces (board : Piece.piece list) = board
 
 let remove_piece (board : Piece.piece list) (piece : Piece.piece) =
   List.filter (fun x -> x <> piece) board
@@ -121,11 +122,16 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
       let board'' = add_piece board' captured_piece_updated in
       let board''' = remove_piece board'' piece in
       add_piece board''' piece'
-    else add_piece (remove_piece board piece) piece'
+    else
+      match Piece.should_promote piece' with
+      | true -> add_piece (remove_piece board piece) (Piece.promote_pawn piece')
+      | false -> add_piece (remove_piece board piece) piece'
   else raise InvalidMove
 
 let graveyard (board : Piece.piece list) =
-  List.filter (fun x -> Piece.get_position x = None) board
+  List.map
+    (fun x -> Piece.piece_to_string x)
+    (List.filter (fun x -> Piece.get_position x = None) board)
 
 (* piece1 piece2 = if (Piece.is_king piece1) && (Piece.is_rook piece1) then
    (king : Piece.piece) rook = match Piece.get_color king wit | Piece.White -> |

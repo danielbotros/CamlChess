@@ -47,10 +47,10 @@ let print_board lst =
     match lst with
     | [] ->
         print_endline " ";
-        print_endline "              a b c d e f g h"
+        print_endline "                    a b c d e f g h"
     | h :: t ->
         print_endline
-          ("          " ^ String.make 1 c ^ "   " ^ String.concat " " h);
+          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h);
         helper (char_of_int (int_of_char c - 1)) t
   in
   helper '8' lst
@@ -65,7 +65,7 @@ let rec play_game_helper st =
   match Command.parse (read_line ()) with
   | exception _ ->
       print_endline "";
-      print_endline "This is not a valid move. Please try again: ";
+      print_endline "           This is not a valid move. Please try again: ";
       play_game_helper st
   | Move (x, y) -> (
       let x' = coordinate_converter x in
@@ -77,7 +77,7 @@ let rec play_game_helper st =
              (Some (y'.[0], int_of_char y'.[1] - 48)))
       with exn ->
         print_endline "";
-        print_endline "This is not a valid move. Please try again: ";
+        print_endline "           This is not a valid move. Please try again: ";
         play_game_helper st)
   | Castle (x, y) -> (
       let x' = coordinate_converter x in
@@ -92,7 +92,7 @@ let rec play_game_helper st =
         print_endline "This is not a valid castle. Please try again: ";
         play_game_helper st)
   | Quit ->
-      print_endline "\nGame over. Hope you enjoyed playing!\n";
+      print_endline "\n           Game over. Hope you enjoyed playing!\n";
       exit 0
 
 (** [play_game new_board] starts the chess game. *)
@@ -102,7 +102,7 @@ let play_game new_board =
 let rec main_helper start =
   match start with
   | "yes" ->
-      print_endline "\n\n♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
+      print_endline "\n\n     ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
       play_game new_board
   | "no" ->
       print_endline
