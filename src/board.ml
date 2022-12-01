@@ -124,4 +124,6 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
   else raise InvalidMove
 
 let graveyard (board : Piece.piece list) =
-  List.filter (fun x -> Piece.get_position x = None) board
+  List.map
+    (fun x -> Piece.piece_to_string x)
+    (List.filter (fun x -> Piece.get_position x = None) board)

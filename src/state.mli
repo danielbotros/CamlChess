@@ -5,6 +5,9 @@ type state
 val board : state -> string list list
 (** [board st] is the GUI representation of the state's board. *)
 
+val graveyard : state -> string
+(* [graveyard st] is the GUI represenation of the state's graveyard. *)
+
 val create_state : Board.board -> state
 (** [create state board] initializes a game with starting board.*)
 

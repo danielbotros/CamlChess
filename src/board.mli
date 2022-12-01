@@ -7,6 +7,9 @@ val init_board : string list list -> board
 val board_to_list : board -> string list list
 (** [board_to_list lst] is the GUI represenation of the current board. *)
 
+val empty : board
+(** The empty board. *)
+
 val get_piece : board -> (char * int) option -> Piece.piece
 (** [get_piece board pos] is the piece at [pos]. *)
 
@@ -40,3 +43,6 @@ val move : board -> (char * int) option -> (char * int) option -> board
     [old_pos] to [new_pos], capturing if applicable. Raises: [InvalidMove] if
     this move is not on board, not legal for the piece, or not legal in the
     rules of chess. *)
+
+val graveyard : board -> string
+(** [graveyard board] is the graveyard list. *)
