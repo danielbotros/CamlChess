@@ -74,11 +74,13 @@ let graveyard st = Board.graveyard st.board
 let create_state lst =
   { board = lst; graveyard = []; past_moves = []; turn = 1 }
 
-let update_state st (old_pos : (char * int) option)
+let update_state (castle : bool) st (old_pos : (char * int) option)
     (new_pos : (char * int) option) =
   if valid_move st old_pos then
     {
-      board = Board.move st.board old_pos new_pos;
+      board =
+        (if castle then Board.castle st.board old_pos new_pos
+        else Board.move st.board old_pos new_pos);
       graveyard = Board.graveyard st.board;
       past_moves = new_pos :: st.past_moves;
       turn = st.turn + 1;

@@ -11,6 +11,7 @@ val graveyard : state -> string list
 val create_state : Board.board -> state
 (** [create state board] initializes a game with starting board.*)
 
-val update_state : state -> (char * int) option -> (char * int) option -> state
+val update_state :
+  bool -> state -> (char * int) option -> (char * int) option -> state
 (** [update state board old_pos new_pos] updates the game state after one player
     turn by moving a piece, adding the move to the move list, and changing turns*)

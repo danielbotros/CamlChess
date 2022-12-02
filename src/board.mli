@@ -51,3 +51,9 @@ val move : board -> (char * int) option -> (char * int) option -> board
 
 val graveyard : board -> string list
 (** [graveyard board] is the graveyard list. *)
+
+val castle : board -> (char * int) option -> (char * int) option -> board
+(** [move board old_pos new_pos] is the updated board after moving the piece at
+    [old_pos] to [new_pos], capturing if applicable. Raises: [InvalidMove] if
+    this move is not on board, not legal for the piece, or not legal in the
+    rules of chess. *)

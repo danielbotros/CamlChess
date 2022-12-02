@@ -132,3 +132,55 @@ let graveyard (board : Piece.piece list) =
   List.map
     (fun x -> Piece.piece_to_string x)
     (List.filter (fun x -> Piece.get_position x = None) board)
+
+(* piece1 piece2 = if (Piece.is_king piece1) && (Piece.is_rook piece1) then
+   (king : Piece.piece) rook = match Piece.get_color king wit | Piece.White -> |
+   Black -> *)
+
+(* user moves king to the right two squares *)
+
+(* is this a valid move that will initiate castling the king ? *)
+
+(* a b c d e f g h 1 2 3 4 5 6 7 8 *)
+let castle (board : Piece.piece list) (pos1 : (char * int) option)
+    (pos2 : (char * int) option) : board =
+  let piece = get_piece board pos1 in
+  if Piece.valid_castle piece pos2 then
+    let fm_king = Piece.is_first_move piece in
+    match pos2 with
+    | None -> failwith "Impossible"
+    | Some (x, y) ->
+        if x = 'h' && y < 4 then
+          (* White Queenside *)
+          let rook = get_piece board (Some ('h', 1)) in
+          let fm_rook = Piece.is_first_move rook in
+          if fm_king && fm_rook then
+            let board' = move board pos1 (Some ('h', 3)) in
+            move board' (Some ('h', 1)) (Some ('h', 4))
+          else raise InvalidMove
+        else if x = 'h' && y > 4 then
+          (* White Kingside *)
+          let rook = get_piece board (Some ('h', 8)) in
+          let fm_rook = Piece.is_first_move rook in
+          if fm_king && fm_rook then
+            let board' = move board pos1 (Some ('h', 7)) in
+            move board' (Some ('h', 8)) (Some ('h', 6))
+          else raise InvalidMove
+        else if x = 'a' && y < 4 then
+          (* Black Queenside *)
+          let rook = get_piece board (Some ('a', 1)) in
+          let fm_rook = Piece.is_first_move rook in
+          if fm_king && fm_rook then
+            let board' = move board pos1 (Some ('a', 3)) in
+            move board' (Some ('a', 1)) (Some ('a', 4))
+          else raise InvalidMove
+        else if x = 'a' && y > 4 then
+          (* Black Kingside *)
+          let rook = get_piece board (Some ('a', 8)) in
+          let fm_rook = Piece.is_first_move rook in
+          if fm_king && fm_rook then
+            let board' = move board pos1 (Some ('a', 7)) in
+            move board' (Some ('a', 8)) (Some ('a', 6))
+          else raise InvalidMove
+        else raise InvalidMove
+  else raise InvalidMove

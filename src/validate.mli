@@ -37,6 +37,14 @@ val valid_pawn_move : (char * int) option -> (char * int) option -> bool
 (** [valid_pawn_move pos1 pos2] is true if moving from [pos1] to [pos2] is a
     legal move for a pawn, false otherwise. *)
 
+val valid_castle_white : (char * int) option -> (char * int) option -> bool
+(** [valid_castle_white pos1 pos2] is true if moving from [pos1] to [pos2] is a
+    legal castling move for a white king, false otherwise. *)
+
+val valid_castle_black : (char * int) option -> (char * int) option -> bool
+(** [valid_castle_black pos1 pos2] is true if moving from [pos1] to [pos2] is a
+    legal castling move for a black king, false otherwise. *)
+
 val valid_knight_move : (char * int) option -> (char * int) option -> bool
 (** [valid_knight_move pos1 pos2] is true if moving from [pos1] to [pos2] is a
     legal move for a knight, false otherwise. *)

@@ -61,6 +61,32 @@ let valid_knight_move pos1 pos2 =
          && c1 - c2 |> abs = 2
   | _ -> false
 
+let valid_castle_white old_pos new_pos : bool =
+  match (old_pos, new_pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      if c2 > c1 then
+        (* White Kingside*)
+        (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
+        && c1 - c2 |> abs = 0
+      else
+        (* White Queenside*)
+        (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
+        && c1 - c2 |> abs = 0
+  | _ -> false
+
+let valid_castle_black old_pos new_pos : bool =
+  match (old_pos, new_pos) with
+  | Some (r1, c1), Some (r2, c2) ->
+      if c2 < c1 then
+        (* Black Kingside*)
+        (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
+        && c1 - c2 |> abs = 0
+      else
+        (* Black Queenside*)
+        (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 2
+        && c1 - c2 |> abs = 0
+  | _ -> false
+
 let valid_king_move pos1 pos2 =
   match (pos1, pos2) with
   | Some (r1, c1), Some (r2, c2) ->
