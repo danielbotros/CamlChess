@@ -45,27 +45,67 @@ let coordinate_converter (cmd : string) =
 let print_board board grave =
   let rec helper c bd gr =
     match (bd, gr) with
-    | [], [ []; b_g ] ->
+    | [], [ []; []; []; [] ] ->
         print_endline " ";
         print_endline "                    a b c d e f g h     "
-    | [ h_b ], [ []; [] ] ->
+    | [ h_b ], [ []; []; []; [] ] ->
         print_endline
           ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b);
-        helper (char_of_int (int_of_char c - 1)) [] [ []; [] ]
-    | [ h_b ], [ []; b_g ] ->
+        helper (char_of_int (int_of_char c - 1)) [] [ []; []; []; [] ]
+    | [ h_b1; h_b2 ], [ []; []; []; [] ] ->
         print_endline
-          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b
-         ^ "      Black Graveyard: " ^ String.concat " " b_g);
-        helper (char_of_int (int_of_char c - 1)) [] [ []; b_g ]
-    | h_b :: t_b, [ []; b_g ] ->
+          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b1);
+        print_endline
+          ("                "
+          ^ String.make 1 (char_of_int (int_of_char c - 1))
+          ^ "   " ^ String.concat " " h_b2);
+        helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
+    | [ h_b1; h_b2 ], [ []; []; b1; [] ] ->
+        print_endline
+          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b1);
+        print_endline
+          ("                "
+          ^ String.make 1 (char_of_int (int_of_char c - 1))
+          ^ "   " ^ String.concat " " h_b2 ^ "      Black Graveyard: "
+          ^ String.concat " " b1);
+        helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
+    | [ h_b1; h_b2 ], [ []; []; b1; b2 ] ->
+        print_endline
+          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b1
+         ^ "      Black Graveyard: " ^ String.concat " " b1);
+        print_endline
+          ("                "
+          ^ String.make 1 (char_of_int (int_of_char c - 1))
+          ^ "   " ^ String.concat " " h_b2 ^ "                       "
+          ^ String.concat " " b2);
+        helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
+    | h_b :: t_b, [ []; []; b1; b2 ] ->
         print_endline
           ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b);
-        helper (char_of_int (int_of_char c - 1)) t_b [ []; b_g ]
-    | h_b :: t_b, [ w_g; b_g ] ->
+        helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ]
+    | h_b :: t_b, [ w1; []; b1; b2 ] ->
         print_endline
           ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b
-         ^ "      White Graveyard: " ^ String.concat " " w_g);
-        helper (char_of_int (int_of_char c - 1)) t_b [ []; b_g ]
+         ^ "      White Graveyard: " ^ String.concat " " w1);
+        helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ]
+    | h_b1 :: h_b2 :: t_b, [ w1; w2; b1; b2 ] ->
+        print_endline
+          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b1
+         ^ "      White Graveyard: " ^ String.concat " " w1);
+        print_endline
+          ("                "
+          ^ String.make 1 (char_of_int (int_of_char c - 1))
+          ^ "   " ^ String.concat " " h_b2 ^ "                       "
+          ^ String.concat " " w2);
+        helper (char_of_int (int_of_char c - 2)) t_b [ []; []; b1; b2 ]
+    (* | [ h_b ], [ []; b_g ] -> print_endline (" " ^ String.make 1 c ^ " " ^
+       String.concat " " h_b ^ " Black Graveyard: " ^ String.concat " " b_g);
+       helper (char_of_int (int_of_char c - 1)) [] [ []; b_g ] | h_b :: t_b, [
+       []; b_g ] -> print_endline (" " ^ String.make 1 c ^ " " ^ String.concat "
+       " h_b); helper (char_of_int (int_of_char c - 1)) t_b [ []; b_g ] | h_b ::
+       t_b, [ w_g; b_g ] -> print_endline (" " ^ String.make 1 c ^ " " ^
+       String.concat " " h_b ^ " White Graveyard: " ^ String.concat " " w_g);
+       helper (char_of_int (int_of_char c - 1)) t_b [ []; b_g ] *)
     | _, _ -> failwith "Impossible"
   in
   helper '8' board grave
@@ -73,23 +113,48 @@ let print_board board grave =
 let rec grave_helper grave acc =
   match (grave, acc) with
   | [], acc -> acc
-  | "♟" :: t, [ w; b ] -> grave_helper t [ "♟" :: w; b ]
-  | "♞" :: t, [ w; b ] -> grave_helper t [ "♞" :: w; b ]
-  | "♚" :: t, [ w; b ] -> grave_helper t [ "♚" :: w; b ]
-  | "♛" :: t, [ w; b ] -> grave_helper t [ "♛" :: w; b ]
-  | "♜" :: t, [ w; b ] -> grave_helper t [ "♜" :: w; b ]
-  | "♝" :: t, [ w; b ] -> grave_helper t [ "♝" :: w; b ]
-  | "♙" :: t, [ w; b ] -> grave_helper t [ w; "♙" :: b ]
-  | "♘" :: t, [ w; b ] -> grave_helper t [ w; "♘" :: b ]
-  | "♔" :: t, [ w; b ] -> grave_helper t [ w; "♔" :: b ]
-  | "♕" :: t, [ w; b ] -> grave_helper t [ w; "♕" :: b ]
-  | "♖" :: t, [ w; b ] -> grave_helper t [ w; "♖" :: b ]
-  | "♗" :: t, [ w; b ] -> grave_helper t [ w; "♗" :: b ]
+  | "♟" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length w1 < 8 then grave_helper t [ "♟" :: w1; w2; b1; b2 ]
+      else grave_helper t [ w1; "♟" :: w2; b1; b2 ]
+  | "♞" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length w1 < 8 then grave_helper t [ "♞" :: w1; w2; b1; b2 ]
+      else grave_helper t [ w1; "♞" :: w2; b1; b2 ]
+  | "♚" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length w1 < 8 then grave_helper t [ "♚" :: w1; w2; b1; b2 ]
+      else grave_helper t [ w1; "♚" :: w2; b1; b2 ]
+  | "♛" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length w1 < 8 then grave_helper t [ "♛" :: w1; w2; b1; b2 ]
+      else grave_helper t [ w1; "♛" :: w2; b1; b2 ]
+  | "♜" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length w1 < 8 then grave_helper t [ "♜" :: w1; w2; b1; b2 ]
+      else grave_helper t [ w1; "♜" :: w2; b1; b2 ]
+  | "♝" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length w1 < 8 then grave_helper t [ "♝" :: w1; w2; b1; b2 ]
+      else grave_helper t [ w1; "♝" :: w2; b1; b2 ]
+  | "♙" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length b1 < 8 then grave_helper t [ w1; w2; "♙" :: b1; b2 ]
+      else grave_helper t [ w1; w2; b1; "♙" :: b2 ]
+  | "♘" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length b1 < 8 then grave_helper t [ w1; w2; "♘" :: b1; b2 ]
+      else grave_helper t [ w1; w2; b1; "♘" :: b2 ]
+  | "♔" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length b1 < 8 then grave_helper t [ w1; w2; "♔" :: b1; b2 ]
+      else grave_helper t [ w1; w2; b1; "♔" :: b2 ]
+  | "♕" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length b1 < 8 then grave_helper t [ w1; w2; "♕" :: b1; b2 ]
+      else grave_helper t [ w1; w2; b1; "♕" :: b2 ]
+  | "♖" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length b1 < 8 then grave_helper t [ w1; w2; "♖" :: b1; b2 ]
+      else grave_helper t [ w1; w2; b1; "♖" :: b2 ]
+  | "♗" :: t, [ w1; w2; b1; b2 ] ->
+      if List.length b1 < 8 then grave_helper t [ w1; w2; "♗" :: b1; b2 ]
+      else grave_helper t [ w1; w2; b1; "♗" :: b2 ]
   | _ -> failwith "Invalid call to grave_helper"
 
 let rec play_game_helper st =
   print_endline "";
-  print_board (State.board st) (grave_helper (State.graveyard st) [ []; [] ]);
+  print_board (State.board st)
+    (grave_helper (State.graveyard st) [ []; []; []; [] ]);
   print_endline
     "\n\n\
      Enter 'move' followed by starting position and final position\n\

@@ -121,7 +121,9 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
       let board' = remove_piece board captured_piece in
       let board'' = add_piece board' captured_piece_updated in
       let board''' = remove_piece board'' piece in
-      add_piece board''' piece'
+      match Piece.should_promote piece' with
+      | true -> add_piece board''' (Piece.promote_pawn piece')
+      | false -> add_piece board''' piece'
     else
       match Piece.should_promote piece' with
       | true -> add_piece (remove_piece board piece) (Piece.promote_pawn piece')
