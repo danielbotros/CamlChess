@@ -38,7 +38,10 @@ and valid_king_moves board color =
     for col = 1 to 8 do
       try
         let _ =
-          Board.move board (Some (x, y)) (Some (char_of_int (row + 96), col))
+          Board.move board
+            (Some (x, y))
+            (Some (char_of_int (row + 96), col))
+            false
         in
         moves := Some (char_of_int (row + 96), col) :: !moves
       with _ -> ()
@@ -62,7 +65,7 @@ and check_opponent king_moves board color =
         (List.exists
            (fun piece_pos ->
              try
-               let _ = Board.move board piece_pos king_pos in
+               let _ = Board.move board piece_pos king_pos false in
                true
              with _ -> false)
            pieces))
@@ -72,7 +75,7 @@ let board st = Board.board_to_list st.board
 let graveyard st = Board.graveyard st.board
 
 let create_state lst =
-  { board = lst; graveyard = []; past_moves = []; turn = 1 }
+  { board = lst; graveyard = []; past_moves = []; turn = 0 }
 
 let update_state (castle : bool) st (old_pos : (char * int) option)
     (new_pos : (char * int) option) =
@@ -80,9 +83,9 @@ let update_state (castle : bool) st (old_pos : (char * int) option)
     {
       board =
         (if castle then Board.castle st.board old_pos new_pos
-        else Board.move st.board old_pos new_pos);
+        else Board.move st.board old_pos new_pos false);
       graveyard = Board.graveyard st.board;
       past_moves = new_pos :: st.past_moves;
-      turn = st.turn + 1;
+      turn = st.turn (*+ 1*);
     }
   else failwith "invalid move"
