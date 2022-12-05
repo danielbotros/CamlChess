@@ -46,68 +46,85 @@ let print_board board grave =
   let rec helper c bd gr =
     match (bd, gr) with
     | [], [ []; []; []; [] ] ->
-        print_endline " ";
-        print_endline "                    a b c d e f g h     "
+        print_endline "";
+        print_endline "                 a   b   c   d   e   f   g   h "
     | [ h_b ], [ []; []; []; [] ] ->
         print_endline
-          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b);
+          ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
+         ^ " |");
+        print_endline "";
         helper (char_of_int (int_of_char c - 1)) [] [ []; []; []; [] ]
     | [ h_b1; h_b2 ], [ []; []; []; [] ] ->
         print_endline
-          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b1);
+          ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b1
+         ^ " |");
+        print_endline "";
         print_endline
-          ("                "
+          ("          "
           ^ String.make 1 (char_of_int (int_of_char c - 1))
-          ^ "   " ^ String.concat " " h_b2);
+          ^ "    | " ^ String.concat "   " h_b2 ^ " |");
+        print_endline "                 -   -   -   -   -   -   -   -";
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | [ h_b1; h_b2 ], [ []; []; b1; [] ] ->
         print_endline
-          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b1);
+          ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b1
+         ^ " |");
+        print_endline "";
         print_endline
-          ("                "
+          ("          "
           ^ String.make 1 (char_of_int (int_of_char c - 1))
-          ^ "   " ^ String.concat " " h_b2 ^ "      Black Graveyard: "
-          ^ String.concat " " b1);
+          ^ "    | " ^ String.concat "   " h_b2 ^ " |    Black Graveyard: "
+          ^ String.concat " | " b1);
+        print_endline "                 -   -   -   -   -   -   -   -";
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | [ h_b1; h_b2 ], [ []; []; b1; b2 ] ->
         print_endline
-          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b1
-         ^ "      Black Graveyard: " ^ String.concat " " b1);
+          ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b1
+         ^ " |    Black Graveyard: " ^ String.concat " | " b1);
+        print_endline "";
         print_endline
-          ("                "
+          ("          "
           ^ String.make 1 (char_of_int (int_of_char c - 1))
-          ^ "   " ^ String.concat " " h_b2 ^ "                       "
-          ^ String.concat " " b2);
+          ^ "    | " ^ String.concat "   " h_b2 ^ " |                     "
+          ^ String.concat " | " b2);
+        print_endline "                 -   -   -   -   -   -   -   -";
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | h_b :: t_b, [ []; []; b1; b2 ] ->
-        print_endline
-          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b);
+        if c = '8' then begin
+          print_endline "                 -   -   -   -   -   -   -   -";
+          print_endline
+            ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
+           ^ " |")
+        end
+        else
+          print_endline
+            ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
+           ^ " |");
+        print_endline "";
         helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ]
     | h_b :: t_b, [ w1; []; b1; b2 ] ->
+        print_endline "                 -   -   -   -   -   -   -   -";
         print_endline
-          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b
-         ^ "      White Graveyard: " ^ String.concat " " w1);
+          ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
+         ^ " |    White Graveyard: " ^ String.concat " | " w1);
+        print_endline "";
         helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ]
     | h_b1 :: h_b2 :: t_b, [ w1; w2; b1; b2 ] ->
+        print_endline "                 -   -   -   -   -   -   -   -";
         print_endline
-          ("                " ^ String.make 1 c ^ "   " ^ String.concat " " h_b1
-         ^ "      White Graveyard: " ^ String.concat " " w1);
+          ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b1
+         ^ " |    White Graveyard: " ^ String.concat " | " w1);
+        print_endline "";
         print_endline
-          ("                "
+          ("          "
           ^ String.make 1 (char_of_int (int_of_char c - 1))
-          ^ "   " ^ String.concat " " h_b2 ^ "                       "
-          ^ String.concat " " w2);
+          ^ "    | " ^ String.concat "   " h_b2 ^ " |                     "
+          ^ String.concat " | " w2 ^ " | ");
+        print_endline "";
         helper (char_of_int (int_of_char c - 2)) t_b [ []; []; b1; b2 ]
-    (* | [ h_b ], [ []; b_g ] -> print_endline (" " ^ String.make 1 c ^ " " ^
-       String.concat " " h_b ^ " Black Graveyard: " ^ String.concat " " b_g);
-       helper (char_of_int (int_of_char c - 1)) [] [ []; b_g ] | h_b :: t_b, [
-       []; b_g ] -> print_endline (" " ^ String.make 1 c ^ " " ^ String.concat "
-       " h_b); helper (char_of_int (int_of_char c - 1)) t_b [ []; b_g ] | h_b ::
-       t_b, [ w_g; b_g ] -> print_endline (" " ^ String.make 1 c ^ " " ^
-       String.concat " " h_b ^ " White Graveyard: " ^ String.concat " " w_g);
-       helper (char_of_int (int_of_char c - 1)) t_b [ []; b_g ] *)
     | _, _ -> failwith "Impossible"
   in
+  print_endline "";
   helper '8' board grave
 
 let rec grave_helper grave acc =
@@ -155,14 +172,23 @@ let rec play_game_helper st =
   print_endline "";
   print_board (State.board st)
     (grave_helper (State.graveyard st) [ []; []; []; [] ]);
-  print_endline
-    "\n\n\
-     Enter 'move' followed by starting position and final position\n\
-     of the desired move (for example: move g2 e2) or 'quit' to exit:";
+  if State.get_turn st mod 2 = 1 then
+    print_endline
+      "\n\n\
+      \                     【  Turn: White  】 \n\
+      \ Enter the desired move (for example: move g2 e2) or 'quit' to exit:"
+  else
+    print_endline
+      "\n\n\
+      \                     〖  Turn: Black  〗\n\
+      \ Enter the desired move (for example: move g2 e2) or 'quit' to exit:";
+  print_endline "";
+  print_string "> ";
   match Command.parse (read_line ()) with
   | exception _ ->
       print_endline "";
-      print_endline "     This is not a valid move. Please try again: ";
+      ANSITerminal.print_string [ ANSITerminal.red ]
+        "      This is not a valid move command. Please try again! ";
       play_game_helper st
   | Move (x, y) -> (
       let x' = coordinate_converter x in
@@ -174,7 +200,12 @@ let rec play_game_helper st =
              (Some (y'.[0], int_of_char y'.[1] - 48)))
       with exn ->
         print_endline "";
-        print_endline "           This is not a valid move. Please try again: ";
+        if State.get_turn st mod 2 = 1 then
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            "   Attempted move is not a valid white move. Please try again! "
+        else
+          print_endline
+            "   Attempted move is not a valid black move. Please try again! ";
         play_game_helper st)
   | Castle (x, y) -> (
       let x' = coordinate_converter x in
@@ -196,26 +227,44 @@ let rec play_game_helper st =
 let play_game new_board =
   play_game_helper (State.create_state (Board.init_board new_board))
 
-let rec main_helper start =
+let rec main_helper start n =
   match start with
   | "yes" ->
-      print_endline "\n\n     ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
+      ANSITerminal.print_string [ ANSITerminal.yellow ]
+        "\n\n           ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
       play_game new_board
   | "no" ->
-      print_endline
-        "\n\
-        \ (>'-'>)  Every new beginning comes from some other beginning's end \n";
+      begin
+        match n mod 3 with
+        | 0 ->
+            print_endline "\n             No chess today? That's alright! ";
+            print_endline "   (ﾉ^_^)ﾉ   Every new beginning comes from";
+            print_endline "               some other beginning's end \n"
+        | 1 ->
+            print_endline
+              "\n     I hope you chase your dreams and live    ᕦ(ò_óˇ)ᕤ";
+            print_endline "         the life you've always wanted!"
+        | _ ->
+            print_endline "\n ୧(^˽^)୨  Chess will always be here";
+            print_endline "          when you are ready to play "
+      end;
+
       exit 0
   | _ ->
-      print_endline "\nWait what?\n";
-      main_helper (read_line ())
+      print_endline "\n             I don't understand.";
+      print_endline "        Do you want to start a game? ";
+      ANSITerminal.print_string [ ANSITerminal.yellow ]
+        "        (Hint: Enter \"yes\" or  \"no\")\n";
+      print_endline "";
+      print_string "> ";
+      main_helper (read_line ()) (n + 1)
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  print_endline "\n\n         Welcome to chess!\n";
-  print_endline "Do you want to start a game? (yes/no) \n";
+  print_endline "\n\n             Welcome to chess!\n";
+  print_endline "     Do you want to start a game? (yes/no) \n";
   print_string "> ";
-  main_helper (read_line ())
+  main_helper (read_line ()) 0
 
 (* Execute the game engine. *)
 let () = main ()
