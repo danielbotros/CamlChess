@@ -5,10 +5,11 @@ type state = {
   turn : int;
 }
 
+let get_turn s = s.turn
 let get_color p = p |> Piece.get_color |> Piece.color_to_string
 
 let rec valid_move { board; past_moves; turn } pos =
-  let color = if turn mod 2 = 0 then "White" else "Black" in
+  let color = if turn mod 2 = 1 then "White" else "Black" in
   valid_pos board color pos
 
 and valid_pos board color pos =

@@ -15,3 +15,6 @@ val update_state :
   bool -> state -> (char * int) option -> (char * int) option -> state
 (** [update state board old_pos new_pos] updates the game state after one player
     turn by moving a piece, adding the move to the move list, and changing turns*)
+
+val get_turn : state -> int
+(** [get_turn st] returns the integer representing current turn*)
