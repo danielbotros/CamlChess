@@ -200,8 +200,12 @@ let rec play_game_helper st =
              (Some (y'.[0], int_of_char y'.[1] - 48)))
       with exn ->
         print_endline "";
-        ANSITerminal.print_string [ ANSITerminal.red ]
-          "   Attempted a move with incorrect piece color. Please try again! ";
+        if State.get_turn st mod 2 = 1 then
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            "   Attempted move is not a valid white move. Please try again! "
+        else
+          print_endline
+            "   Attempted move is not a valid black move. Please try again! ";
         play_game_helper st)
   | Castle (x, y) -> (
       let x' = coordinate_converter x in

@@ -76,7 +76,7 @@ let board st = Board.board_to_list st.board
 let graveyard st = Board.graveyard st.board
 
 let create_state lst =
-  { board = lst; graveyard = []; past_moves = []; turn = 0 }
+  { board = lst; graveyard = []; past_moves = []; turn = 1 }
 
 let update_state (castle : bool) st (old_pos : (char * int) option)
     (new_pos : (char * int) option) =
@@ -87,6 +87,6 @@ let update_state (castle : bool) st (old_pos : (char * int) option)
         else Board.move st.board old_pos new_pos false);
       graveyard = Board.graveyard st.board;
       past_moves = new_pos :: st.past_moves;
-      turn = st.turn (*+ 1*);
+      turn = st.turn + 1;
     }
   else failwith "invalid move"
