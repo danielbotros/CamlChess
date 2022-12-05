@@ -1,13 +1,13 @@
 type state = {
   board : Board.board;
   graveyard : string list;
-  past_moves : (char * int) option list;
+  past_moves : ((char * int) option * (char * int) option) list;
   turn : int;
 }
 
 let get_color p = p |> Piece.get_color |> Piece.color_to_string
 
-let rec valid_move { board; past_moves; turn } pos =
+let rec valid_move { board; graveyard; past_moves; turn } pos =
   let color = if turn mod 2 = 0 then "White" else "Black" in
   valid_pos board color pos
 
@@ -15,11 +15,11 @@ and valid_pos board color pos =
   let piece_color = Board.get_piece board pos |> get_color in
   piece_color = color
 
-and checkmate board color =
-  let _ = valid_king_moves board color in
+and checkmate st board color =
+  let _ = valid_king_moves st board color in
   ()
 
-and valid_king_moves board color =
+and valid_king_moves st board color =
   let pos = ref (-1, -1) in
   for row = 1 to 8 do
     for col = 1 to 8 do
@@ -41,7 +41,7 @@ and valid_king_moves board color =
           Board.move board
             (Some (x, y))
             (Some (char_of_int (row + 96), col))
-            false
+            false (List.hd st.past_moves)
         in
         moves := Some (char_of_int (row + 96), col) :: !moves
       with _ -> ()
@@ -55,7 +55,7 @@ and valid_king_moves board color =
     !moves;
   !moves
 
-and check_opponent king_moves board color =
+and check_opponent st king_moves board color =
   let pieces =
     List.map (fun p -> Piece.get_position p) (Board.get_pieces board)
   in
@@ -65,7 +65,10 @@ and check_opponent king_moves board color =
         (List.exists
            (fun piece_pos ->
              try
-               let _ = Board.move board piece_pos king_pos false in
+               let _ =
+                 Board.move board piece_pos king_pos false
+                   (List.hd st.past_moves)
+               in
                true
              with _ -> false)
            pieces))
@@ -75,17 +78,23 @@ let board st = Board.board_to_list st.board
 let graveyard st = Board.graveyard st.board
 
 let create_state lst =
-  { board = lst; graveyard = []; past_moves = []; turn = 0 }
+  {
+    board = lst;
+    graveyard = [];
+    past_moves = [ (Some ('h', 1), Some ('h', 8)) ];
+    turn = 0;
+  }
 
 let update_state (castle : bool) st (old_pos : (char * int) option)
     (new_pos : (char * int) option) =
   if valid_move st old_pos then
     {
       board =
-        (if castle then Board.castle st.board old_pos new_pos
-        else Board.move st.board old_pos new_pos false);
+        (if castle then
+         Board.castle st.board old_pos new_pos (List.hd st.past_moves)
+        else Board.move st.board old_pos new_pos false (List.hd st.past_moves));
       graveyard = Board.graveyard st.board;
-      past_moves = new_pos :: st.past_moves;
-      turn = st.turn (*+ 1*);
+      past_moves = (old_pos, new_pos) :: st.past_moves;
+      turn = st.turn + 1;
     }
   else failwith "invalid move"

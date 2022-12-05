@@ -43,16 +43,37 @@ val clear_path :
 (** [clear_path board new_pos piece old_pos] is true if there is a clear path
     for [piece] to move between [old_pos] and [new_pos], false if otherwise *)
 
-val move : board -> (char * int) option -> (char * int) option -> bool -> board
-(** [move board old_pos new_pos] is the updated board after moving the piece at
-    [old_pos] to [new_pos], capturing if applicable. Raises: [InvalidMove] if
-    this move is not on board, not legal for the piece, or not legal in the
-    rules of chess. *)
+val en_passant :
+  board ->
+  Piece.piece ->
+  (char * int) option ->
+  (char * int) option ->
+  (char * int) option * (char * int) option ->
+  bool
+(** [en_passant board piece old_pos new_pos prev_mode] is true is this move is a
+    legal en passant, false if otherwise. *)
+
+val move :
+  board ->
+  (char * int) option ->
+  (char * int) option ->
+  bool ->
+  (char * int) option * (char * int) option ->
+  board
+(** [move board old_pos new_pos castle prev_move] is the updated board after
+    moving the piece at [old_pos] to [new_pos], capturing or castling if
+    applicable. Raises: [InvalidMove] if this move is not on board, not legal
+    for the piece, or not legal in the rules of chess. *)
 
 val graveyard : board -> string list
 (** [graveyard board] is the graveyard list. *)
 
-val castle : board -> (char * int) option -> (char * int) option -> board
+val castle :
+  board ->
+  (char * int) option ->
+  (char * int) option ->
+  (char * int) option * (char * int) option ->
+  board
 (** [move board old_pos new_pos] is the updated board after moving the piece at
     [old_pos] to [new_pos], capturing if applicable. Raises: [InvalidMove] if
     this move is not on board, not legal for the piece, or not legal in the

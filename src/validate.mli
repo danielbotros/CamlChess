@@ -29,13 +29,31 @@ val diagonal_move : (char * int) option -> (char * int) option -> bool
 (** [diagonal_move pos1 pos2] is true if moving from [pos1] to [pos2] can be
     done in one diagonal move, false otherwise. *)
 
-val valid_pawn_attack : (char * int) option -> (char * int) option -> bool
-(** [valid_pawn_attack pos1 pos2] is true if moving from [pos1] to [pos2] is a
-    legal attacking move for a pawn, false otherwise. *)
+val is_in_en_passant :
+  (char * int) option -> (char * int) option -> bool -> bool
+(** [is_in_en_passant pos1 pos2] is true if moving from [pos1] to [pos2] put the
+    pawn at [pos2] in risk of en passant, false if otherwise.*)
 
-val valid_pawn_move : (char * int) option -> (char * int) option -> bool
+val valid_en_passant :
+  (char * int) option -> (char * int) option -> (char * int) option -> bool
+(** [valid_en_passant pos1 pos2 pos3] is true if moving from [pos1] to [pos2] is
+    an en passant capture for the pawn at [pos3], false if otherwise. *)
+
+val valid_pawn_attack_white : (char * int) option -> (char * int) option -> bool
+(** [valid_pawn_attack pos1 pos2] is true if moving from [pos1] to [pos2] is a
+    legal attacking move for a white pawn, false otherwise. *)
+
+val valid_pawn_attack_black : (char * int) option -> (char * int) option -> bool
+(** [valid_pawn_attack pos1 pos2] is true if moving from [pos1] to [pos2] is a
+    legal attacking move for a black pawn, false otherwise. *)
+
+val valid_pawn_move_white : (char * int) option -> (char * int) option -> bool
 (** [valid_pawn_move pos1 pos2] is true if moving from [pos1] to [pos2] is a
-    legal move for a pawn, false otherwise. *)
+    legal move for a white pawn, false otherwise. *)
+
+val valid_pawn_move_black : (char * int) option -> (char * int) option -> bool
+(** [valid_pawn_move pos1 pos2] is true if moving from [pos1] to [pos2] is a
+    legal move for a black pawn, false otherwise. *)
 
 val valid_castle : (char * int) option -> (char * int) option -> bool
 (** [valid_castle old_pos new_pos] is true if moving from [old_pos] to [new_pos]

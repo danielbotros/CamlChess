@@ -36,7 +36,13 @@ val get_position : piece -> (char * int) option
 (** [get_position piece] is the position of [piece]. *)
 
 val get_color : piece -> color
-(** [get_color piece] is the color of [piece]. s*)
+(** [get_color piece] is the color of [piece]. *)
+
+val is_white : piece -> bool
+(** [is_white piece] is true if [piece] is White, false otherwise. *)
+
+val is_black : piece -> bool
+(** [is_black piece] is true if [piece] is Black, false otherwise. *)
 
 val is_first_move : piece -> bool
 (** [is_first_move piece] is true if it is the first move of [piece], false
