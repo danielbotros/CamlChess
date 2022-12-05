@@ -121,17 +121,9 @@ let move_piece piece pos =
 let valid_move piece pos =
   let old_pos = piece.position in
   match piece.piece_type with
-  | Pawn false -> Validate.valid_pawn_move old_pos pos
   | Knight -> Validate.valid_knight_move old_pos pos
   | King -> Validate.valid_king_move old_pos pos
   | Queen -> Validate.valid_queen_move old_pos pos
   | Rook -> Validate.valid_rook_move old_pos pos
   | Bishop -> Validate.valid_bishop_move old_pos pos
-  | Pawn true -> failwith "Should be promoted"
-
-let valid_castle piece new_pos =
-  let old_pos = piece.position in
-  match (piece.piece_type, piece.color) with
-  | King, White -> Validate.valid_castle_white old_pos new_pos
-  | King, Black -> Validate.valid_castle_black old_pos new_pos
-  | _ -> false
+  | _ -> failwith "Pawn"

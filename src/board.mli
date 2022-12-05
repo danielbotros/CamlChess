@@ -43,7 +43,7 @@ val clear_path :
 (** [clear_path board new_pos piece old_pos] is true if there is a clear path
     for [piece] to move between [old_pos] and [new_pos], false if otherwise *)
 
-val move : board -> (char * int) option -> (char * int) option -> board
+val move : board -> (char * int) option -> (char * int) option -> bool -> board
 (** [move board old_pos new_pos] is the updated board after moving the piece at
     [old_pos] to [new_pos], capturing if applicable. Raises: [InvalidMove] if
     this move is not on board, not legal for the piece, or not legal in the
