@@ -18,21 +18,84 @@
 open OUnit2
 open Game
 
+let new_board =
+  [
+    [ "♖"; "♘"; "♗"; "♕"; "♔"; "♗"; "♘"; "♖" ];
+    [ "♙"; "♙"; "♙"; "♙"; "♙"; "♙"; "♙"; "♙" ];
+    [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
+    [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
+    [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
+    [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
+    [ "♟"; "♟"; "♟"; "♟"; "♟"; "♟"; "♟"; "♟" ];
+    [ "♜"; "♞"; "♝"; "♛"; "♚"; "♝"; "♞"; "♜" ];
+  ]
+
+let coordinate_converter_row ltr =
+  match ltr with
+  | 'a' -> "1"
+  | 'b' -> "2"
+  | 'c' -> "3"
+  | 'd' -> "4"
+  | 'e' -> "5"
+  | 'f' -> "6"
+  | 'g' -> "7"
+  | 'h' -> "8"
+  | _ -> failwith "Impossible"
+
+let coordinate_converter_col nmbr =
+  match nmbr with
+  | '1' -> "h"
+  | '2' -> "g"
+  | '3' -> "f"
+  | '4' -> "e"
+  | '5' -> "d"
+  | '6' -> "c"
+  | '7' -> "b"
+  | '8' -> "a"
+  | _ -> failwith "Impossible"
+
+let coordinate_converter (cmd : string) =
+  coordinate_converter_col cmd.[1] ^ coordinate_converter_row cmd.[0]
+
 let sample_test (name : string) test_output expected_output : test =
   name >:: fun _ -> assert_equal expected_output test_output
 
-let king = Piece.string_to_piece "♔"
-let pawn = Piece.string_to_piece "♟"
+let b_king = Piece.string_to_piece "♔"
+let w_queen = Piece.string_to_piece "♛"
+let b_knight = Piece.string_to_piece "♘"
+let w_rook = Piece.string_to_piece "♜"
+let b_bishop = Piece.string_to_piece "♗"
+let w_pawn = Piece.string_to_piece "♟"
+let st = State.create_state (Board.init_board new_board)
 
-let piece_tests =
+let create_piece_tests =
   [
     sample_test "creating king piece"
-      (Piece.is_king (Piece.create_piece (fst king) (Some ('a', 1)) (snd king)))
+      (Piece.is_king
+         (Piece.create_piece (fst b_king) (Some ('e', 8)) (snd b_king)))
+      true;
+    sample_test "creating queen piece"
+      (Piece.is_queen
+         (Piece.create_piece (fst w_queen) (Some ('d', 1)) (snd w_queen)))
+      true;
+    sample_test "creating knight piece"
+      (Piece.is_knight
+         (Piece.create_piece (fst b_knight) (Some ('b', 8)) (snd b_knight)))
+      true;
+    sample_test "creating rook piece"
+      (Piece.is_rook
+         (Piece.create_piece (fst w_rook) (Some ('a', 1)) (snd w_rook)))
+      true;
+    sample_test "creating bishop piece"
+      (Piece.is_bishop
+         (Piece.create_piece (fst b_bishop) (Some ('c', 8)) (snd b_bishop)))
       true;
     sample_test "creating pawn piece"
-      (Piece.is_pawn (Piece.create_piece (fst pawn) (Some ('a', 1)) (snd pawn)))
+      (Piece.is_pawn
+         (Piece.create_piece (fst w_pawn) (Some ('c', 7)) (snd w_pawn)))
       true;
   ]
 
-let suite = "test suite for chess" >::: List.flatten [ piece_tests ]
+let valid_move_tests = []
+let suite = "chess test suite" >::: List.flatten [ create_piece_tests ]
 let _ = run_test_tt_main suite

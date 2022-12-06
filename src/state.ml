@@ -8,6 +8,9 @@ type state = {
 let get_turn s = s.turn
 let get_color p = p |> Piece.get_color |> Piece.color_to_string
 
+let get_past_moves st =
+  st.past_moves |> List.map (fun (x, y) -> (Option.get x, Option.get y))
+
 let rec valid_move { board; graveyard; past_moves; turn } pos =
   let color = if turn mod 2 = 1 then "White" else "Black" in
   valid_pos board color pos
@@ -42,7 +45,9 @@ and valid_king_moves st board color =
           Board.move board
             (Some (x, y))
             (Some (char_of_int (row + 96), col))
-            false (List.hd st.past_moves)
+            false
+            (try List.hd st.past_moves
+             with Failure e -> (Some ('h', 1), Some ('h', 8)))
         in
         moves := Some (char_of_int (row + 96), col) :: !moves
       with _ -> ()
@@ -68,7 +73,8 @@ and check_opponent st king_moves board color =
              try
                let _ =
                  Board.move board piece_pos king_pos false
-                   (List.hd st.past_moves)
+                   (try List.hd st.past_moves
+                    with Failure e -> (Some ('h', 1), Some ('h', 8)))
                in
                true
              with _ -> false)
@@ -79,12 +85,7 @@ let board st = Board.board_to_list st.board
 let graveyard st = Board.graveyard st.board
 
 let create_state lst =
-  {
-    board = lst;
-    graveyard = [];
-    past_moves = [ (Some ('h', 1), Some ('h', 8)) ];
-    turn = 1;
-  }
+  { board = lst; graveyard = []; past_moves = []; turn = 1 }
 
 let update_state (castle : bool) st (old_pos : (char * int) option)
     (new_pos : (char * int) option) =
@@ -92,8 +93,13 @@ let update_state (castle : bool) st (old_pos : (char * int) option)
     {
       board =
         (if castle then
-         Board.castle st.board old_pos new_pos (List.hd st.past_moves)
-        else Board.move st.board old_pos new_pos false (List.hd st.past_moves));
+         Board.castle st.board old_pos new_pos
+           (try List.hd st.past_moves
+            with Failure e -> (Some ('h', 1), Some ('h', 8)))
+        else
+          Board.move st.board old_pos new_pos false
+            (try List.hd st.past_moves
+             with Failure e -> (Some ('h', 1), Some ('h', 8))));
       graveyard = Board.graveyard st.board;
       past_moves = (old_pos, new_pos) :: st.past_moves;
       turn = st.turn + 1;

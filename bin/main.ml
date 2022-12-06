@@ -15,34 +15,43 @@ let new_board =
     [ "♜"; "♞"; "♝"; "♛"; "♚"; "♝"; "♞"; "♜" ];
   ]
 
-let coordinate_converter_row ltr =
+let coordinate_converter_row ltr rev =
   match ltr with
-  | 'a' -> "1"
-  | 'b' -> "2"
-  | 'c' -> "3"
-  | 'd' -> "4"
-  | 'e' -> "5"
-  | 'f' -> "6"
-  | 'g' -> "7"
-  | 'h' -> "8"
+  | 'a' -> if rev then "8" else "1"
+  | 'b' -> if rev then "7" else "2"
+  | 'c' -> if rev then "6" else "3"
+  | 'd' -> if rev then "5" else "4"
+  | 'e' -> if rev then "4" else "5"
+  | 'f' -> if rev then "3" else "6"
+  | 'g' -> if rev then "2" else "7"
+  | 'h' -> if rev then "1" else "8"
   | _ -> failwith "Impossible"
 
-let coordinate_converter_col nmbr =
+let coordinate_converter_col nmbr rev =
   match nmbr with
-  | '1' -> "h"
-  | '2' -> "g"
-  | '3' -> "f"
-  | '4' -> "e"
-  | '5' -> "d"
-  | '6' -> "c"
-  | '7' -> "b"
-  | '8' -> "a"
+  | '1' -> if rev then "a" else "h"
+  | '2' -> if rev then "b" else "g"
+  | '3' -> if rev then "c" else "f"
+  | '4' -> if rev then "d" else "e"
+  | '5' -> if rev then "e" else "d"
+  | '6' -> if rev then "f" else "c"
+  | '7' -> if rev then "g" else "b"
+  | '8' -> if rev then "h" else "a"
   | _ -> failwith "Impossible"
 
-let coordinate_converter (cmd : string) =
-  coordinate_converter_col cmd.[1] ^ coordinate_converter_row cmd.[0]
+let coordinate_converter (cmd : string) (rev : bool) =
+  if rev then
+    (* print_endline ("Converting to good:" ^ cmd ^ ", " ^ string_of_bool
+       rev); *)
+    coordinate_converter_col cmd.[1] true
+    ^ coordinate_converter_row cmd.[0] true
+  else
+    (* print_endline ("Converting to bad:" ^ cmd ^ ", " ^ string_of_bool
+       rev); *)
+    coordinate_converter_col cmd.[1] false
+    ^ coordinate_converter_row cmd.[0] false
 
-let print_board board grave =
+let print_board board grave (moves1, moves2) =
   let rec helper c bd gr =
     match (bd, gr) with
     | [], [ []; []; []; [] ] ->
@@ -90,18 +99,27 @@ let print_board board grave =
         print_endline "                 -   -   -   -   -   -   -   -";
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | h_b :: t_b, [ []; []; b1; b2 ] ->
-        if c = '8' then begin
+        if c = '8' then (
           print_endline "                 -   -   -   -   -   -   -   -";
           print_endline
             ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
-           ^ " |")
-        end
-        else
+           ^ " |");
+          print_endline "";
+          helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ])
+        else if c = '5' then (
+          print_endline
+            ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
+           ^ " |" ^ "     " ^ moves1);
+          print_endline
+            ("                                                                 "
+           ^ moves2);
+          helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ])
+        else (
           print_endline
             ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
            ^ " |");
-        print_endline "";
-        helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ]
+          print_endline "";
+          helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ])
     | h_b :: t_b, [ w1; []; b1; b2 ] ->
         print_endline "                 -   -   -   -   -   -   -   -";
         print_endline
@@ -168,10 +186,33 @@ let rec grave_helper grave acc =
       else grave_helper t [ w1; w2; b1; "♗" :: b2 ]
   | _ -> failwith "Invalid call to grave_helper"
 
+let past_moves st =
+  State.get_past_moves st
+  |> List.map (fun ((c1, i1), (c2, i2)) ->
+         coordinate_converter (String.make 1 c1 ^ string_of_int i1) true
+         ^ " -> "
+         ^ coordinate_converter (String.make 1 c2 ^ string_of_int i2) true)
+
+let past_helper st =
+  match past_moves st with
+  | h1 :: h2 :: h3 :: h4 :: h5 :: h6 :: t ->
+      ( "Past Moves: " ^ h1 ^ " | " ^ h2 ^ " | " ^ h3,
+        h4 ^ " | " ^ h5 ^ " | " ^ h6 )
+  | h1 :: h2 :: h3 :: h4 :: h5 :: t ->
+      ("Past Moves: " ^ h1 ^ " | " ^ h2 ^ " | " ^ h3, h4 ^ " | " ^ h5)
+  | h1 :: h2 :: h3 :: h4 :: t ->
+      ("Past Moves: " ^ h1 ^ " | " ^ h2 ^ " | " ^ h3, h4)
+  | h1 :: h2 :: h3 :: t -> ("Past Moves: " ^ h1 ^ " | " ^ h2 ^ " | " ^ h3, "")
+  | h1 :: h2 :: t -> ("Past Moves: " ^ h1 ^ " | " ^ h2, "")
+  | h :: t -> ("Past Moves: " ^ h, "")
+  | [] -> ("", "")
+
 let rec play_game_helper st =
   print_endline "";
+  let past_moves = past_helper st in
   print_board (State.board st)
-    (grave_helper (State.graveyard st) [ []; []; []; [] ]);
+    (grave_helper (State.graveyard st) [ []; []; []; [] ])
+    past_moves;
   if State.get_turn st mod 2 = 1 then
     print_endline
       "\n\n\
@@ -191,8 +232,10 @@ let rec play_game_helper st =
         "      This is not a valid move command. Please try again! ";
       play_game_helper st
   | Move (x, y) -> (
-      let x' = coordinate_converter x in
-      let y' = coordinate_converter y in
+      let x' = coordinate_converter x false in
+      let y' = coordinate_converter y false in
+      (* print_endline (coordinate_converter x' true ^ coordinate_converter y'
+         true); *)
       try
         play_game_helper
           (State.update_state false st
@@ -208,8 +251,8 @@ let rec play_game_helper st =
             "   Attempted move is not a valid black move. Please try again! ";
         play_game_helper st)
   | Castle (x, y) -> (
-      let x' = coordinate_converter x in
-      let y' = coordinate_converter y in
+      let x' = coordinate_converter x false in
+      let y' = coordinate_converter y false in
       try
         play_game_helper
           (State.update_state true st

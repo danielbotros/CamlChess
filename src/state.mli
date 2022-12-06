@@ -18,3 +18,6 @@ val update_state :
 
 val get_turn : state -> int
 (** [get_turn st] returns the integer representing current turn*)
+
+val get_past_moves : state -> ((char * int) * (char * int)) list
+(** [get_past_moves st] returns the list of past moves made by both players*)
