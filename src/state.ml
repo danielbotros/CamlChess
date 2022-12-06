@@ -83,7 +83,7 @@ let create_state lst =
     board = lst;
     graveyard = [];
     past_moves = [ (Some ('h', 1), Some ('h', 8)) ];
-    turn = 0;
+    turn = 1;
   }
 
 let update_state (castle : bool) st (old_pos : (char * int) option)

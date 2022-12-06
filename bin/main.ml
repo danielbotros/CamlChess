@@ -176,12 +176,12 @@ let rec play_game_helper st =
     print_endline
       "\n\n\
       \                     【  Turn: White  】 \n\
-      \ Enter the desired move (for example: move g2 e2) or 'quit' to exit:"
+      \ Enter the desired move (for example: move e2 e3) or 'quit' to exit:"
   else
     print_endline
       "\n\n\
       \                     〖  Turn: Black  〗\n\
-      \ Enter the desired move (for example: move g2 e2) or 'quit' to exit:";
+      \ Enter the desired move (for example: move e7 e6) or 'quit' to exit:";
   print_endline "";
   print_string "> ";
   match Command.parse (read_line ()) with
@@ -204,7 +204,7 @@ let rec play_game_helper st =
           ANSITerminal.print_string [ ANSITerminal.red ]
             "   Attempted move is not a valid white move. Please try again! "
         else
-          print_endline
+          ANSITerminal.print_string [ ANSITerminal.red ]
             "   Attempted move is not a valid black move. Please try again! ";
         play_game_helper st)
   | Castle (x, y) -> (
