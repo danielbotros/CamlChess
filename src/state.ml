@@ -84,6 +84,7 @@ and check_opponent st king_moves board color =
     king_moves
 
 let board st = Board.board_to_list st.board
+let get_board st = st.board
 let graveyard st = Board.graveyard st.board
 
 let create_state lst =

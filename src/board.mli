@@ -1,5 +1,8 @@
 type board
 
+exception InvalidMove
+(** Raised when there is an invalid move requested of any function*)
+
 val init_board : string list list -> board
 (** [init_board board] is the board represented by the current board displayed
     on the GUI. *)

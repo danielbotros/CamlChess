@@ -72,7 +72,7 @@ let print_board board grave (moves1, moves2) =
           ("          "
           ^ String.make 1 (char_of_int (int_of_char c - 1))
           ^ "    | " ^ String.concat "   " h_b2 ^ " |");
-        print_endline "                 -   -   -   -   -   -   -   -";
+        print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | [ h_b1; h_b2 ], [ []; []; b1; [] ] ->
         print_endline
@@ -84,7 +84,7 @@ let print_board board grave (moves1, moves2) =
           ^ String.make 1 (char_of_int (int_of_char c - 1))
           ^ "    | " ^ String.concat "   " h_b2 ^ " |    Black Graveyard: "
           ^ String.concat " | " b1);
-        print_endline "                 -   -   -   -   -   -   -   -";
+        print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | [ h_b1; h_b2 ], [ []; []; b1; b2 ] ->
         print_endline
@@ -96,11 +96,11 @@ let print_board board grave (moves1, moves2) =
           ^ String.make 1 (char_of_int (int_of_char c - 1))
           ^ "    | " ^ String.concat "   " h_b2 ^ " |                     "
           ^ String.concat " | " b2);
-        print_endline "                 -   -   -   -   -   -   -   -";
+        print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | h_b :: t_b, [ []; []; b1; b2 ] ->
         if c = '8' then (
-          print_endline "                 -   -   -   -   -   -   -   -";
+          print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
           print_endline
             ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
            ^ " |");
@@ -121,14 +121,14 @@ let print_board board grave (moves1, moves2) =
           print_endline "";
           helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ])
     | h_b :: t_b, [ w1; []; b1; b2 ] ->
-        print_endline "                 -   -   -   -   -   -   -   -";
+        print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
         print_endline
           ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
          ^ " |    White Graveyard: " ^ String.concat " | " w1);
         print_endline "";
         helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ]
     | h_b1 :: h_b2 :: t_b, [ w1; w2; b1; b2 ] ->
-        print_endline "                 -   -   -   -   -   -   -   -";
+        print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
         print_endline
           ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b1
          ^ " |    White Graveyard: " ^ String.concat " | " w1);
@@ -220,12 +220,12 @@ let rec play_game_helper st =
     print_endline
       "\n\n\
       \                     【  Turn: White  】 \n\
-      \ Enter the desired move (for example: move e2 e3) or 'quit' to exit:"
+      \ Enter your desired move (for example: move e2 e3) or 'quit' to exit:"
   else
     print_endline
       "\n\n\
       \                     〖  Turn: Black  〗\n\
-      \ Enter the desired move (for example: move e7 e6) or 'quit' to exit:";
+      \ Enter your desired move (for example: move e7 e6) or 'quit' to exit:";
   print_endline "";
   print_string "> ";
   match Command.parse (read_line ()) with
@@ -277,7 +277,9 @@ let rec main_helper start n =
   match start with
   | "yes" ->
       ANSITerminal.print_string [ ANSITerminal.yellow ]
-        "\n\n           ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
+        "\n\n         ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
+      (* print_string "Welcome to your Game of Chess! "; *)
+      (* ANSITerminal.print_string [ ANSITerminal.yellow ] "♔  ♛\n"; *)
       play_game new_board
   | "no" ->
       begin
@@ -307,8 +309,8 @@ let rec main_helper start n =
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  print_endline "\n\n             Welcome to chess!\n";
-  print_endline "     Do you want to start a game? (yes/no) \n";
+  print_endline "\n\n                 Welcome to chess!\n";
+  print_endline "         Do you want to start a game? (yes/no) \n";
   print_string "> ";
   main_helper (read_line ()) 0
 

@@ -5,6 +5,9 @@ type state
 val board : state -> string list list
 (** [board st] is the GUI representation of the state's board. *)
 
+val get_board : state -> Board.board
+(** [get_board st] returns the state's board. *)
+
 val graveyard : state -> string list
 (* [graveyard st] is the GUI represenation of the state's graveyard. *)
 
