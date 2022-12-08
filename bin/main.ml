@@ -187,11 +187,14 @@ let rec grave_helper grave acc =
   | _ -> failwith "Invalid call to grave_helper"
 
 let past_moves st =
-  State.get_past_moves st
-  |> List.map (fun ((c1, i1), (c2, i2)) ->
-         coordinate_converter (String.make 1 c1 ^ string_of_int i1) true
-         ^ " -> "
-         ^ coordinate_converter (String.make 1 c2 ^ string_of_int i2) true)
+  let p, coord = State.get_past_moves st in
+  List.map2
+    (fun sym ((c1, i1), (c2, i2)) ->
+      sym ^ "  "
+      ^ coordinate_converter (String.make 1 c1 ^ string_of_int i1) true
+      ^ " -> "
+      ^ coordinate_converter (String.make 1 c2 ^ string_of_int i2) true)
+    p coord
 
 let past_helper st =
   match past_moves st with

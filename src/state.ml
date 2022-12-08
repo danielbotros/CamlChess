@@ -2,6 +2,7 @@ type state = {
   board : Board.board;
   graveyard : string list;
   past_moves : ((char * int) option * (char * int) option) list;
+  past_moves_pieces : string list;
   turn : int;
 }
 
@@ -9,7 +10,8 @@ let get_turn s = s.turn
 let get_color p = p |> Piece.get_color |> Piece.color_to_string
 
 let get_past_moves st =
-  st.past_moves |> List.map (fun (x, y) -> (Option.get x, Option.get y))
+  ( st.past_moves_pieces,
+    st.past_moves |> List.map (fun (x, y) -> (Option.get x, Option.get y)) )
 
 let rec valid_move { board; graveyard; past_moves; turn } pos =
   let color = if turn mod 2 = 1 then "White" else "Black" in
@@ -85,7 +87,13 @@ let board st = Board.board_to_list st.board
 let graveyard st = Board.graveyard st.board
 
 let create_state lst =
-  { board = lst; graveyard = []; past_moves = []; turn = 1 }
+  {
+    board = lst;
+    graveyard = [];
+    past_moves = [];
+    past_moves_pieces = [];
+    turn = 1;
+  }
 
 let update_state (castle : bool) st (old_pos : (char * int) option)
     (new_pos : (char * int) option) =
@@ -102,6 +110,9 @@ let update_state (castle : bool) st (old_pos : (char * int) option)
              with Failure e -> (Some ('h', 1), Some ('h', 8))));
       graveyard = Board.graveyard st.board;
       past_moves = (old_pos, new_pos) :: st.past_moves;
+      past_moves_pieces =
+        (old_pos |> Board.get_piece st.board |> Piece.piece_to_string)
+        :: st.past_moves_pieces;
       turn = st.turn + 1;
     }
   else failwith "invalid move"
