@@ -11,7 +11,12 @@ val get_pieces : board -> Piece.piece list
 (** [get_pieces board] returns all of the pieces on the board **)
 
 val board_to_list : board -> string list list
-(** [board_to_list lst] is the GUI represenation of the current board. *)
+(** [board_to_list lst] is the data represenation represenation of the current
+    board. *)
+
+val board_info_to_list : board -> (char * int) option list -> string list list
+(** [board_info_to_list lst] is the data representation represenation of all the
+    possible moves that a certain piece can make from it's current position. *)
 
 val empty : board
 (** The empty board. *)
@@ -20,6 +25,7 @@ val get_piece : board -> (char * int) option -> Piece.piece
 (** [get_piece board pos] is the piece at [pos]. *)
 
 val get_pieces : board -> Piece.piece list
+(** [get pieces board] is the board. *)
 
 val remove_piece : board -> Piece.piece -> board
 (** [remove_piece voard piece] is the updated board after removing [piece]. *)

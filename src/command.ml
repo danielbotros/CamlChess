@@ -5,6 +5,7 @@ type object_phrase = string * string
 type command =
   | Move of object_phrase
   | Castle of object_phrase
+  | Info of object_phrase
   | Quit
 
 exception Empty
@@ -43,5 +44,19 @@ let parse str =
               else raise Malformed
           | _ -> raise Malformed
         end
+      | "info" -> (
+          match t with
+          | [] -> raise Malformed
+          | [ loc ] ->
+              let piece_loc = String.lowercase_ascii loc in
+              if
+                Char.code 'a' <= Char.code piece_loc.[0]
+                && Char.code piece_loc.[0] <= Char.code 'h'
+                && int_of_char piece_loc.[1] - int_of_char '0' >= 1
+                && int_of_char piece_loc.[1] - int_of_char '0' <= 8
+                && String.length piece_loc = 2
+              then Info (piece_loc, "")
+              else raise Malformed
+          | _ -> raise Malformed)
       | _ -> raise Malformed
     end

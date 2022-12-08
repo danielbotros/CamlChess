@@ -45,6 +45,33 @@ let board_to_list lst =
   in
   row 1
 
+let board_info_to_list (board : Piece.piece list)
+    (moves_lst : (char * int) option list) =
+  let rec row x =
+    if x = 9 then []
+    else
+      let rec col y =
+        if y = 9 then []
+        else
+          try
+            (List.find
+               (fun a -> Piece.get_position a = Some (char_of_int (x + 96), y))
+               board
+            |> Piece.piece_to_string)
+            :: col (y + 1)
+          with Not_found ->
+            let square =
+              let pos = Some (char_of_int (x + 96), y) in
+              if List.exists (fun pos' -> pos' = pos) moves_lst then "✓"
+              else if (x + y) mod 2 = 0 then "■"
+              else "□"
+            in
+            square :: col (y + 1)
+      in
+      col 1 :: row (x + 1)
+  in
+  row 1
+
 let get_pieces (board : Piece.piece list) = board
 
 let remove_piece (board : Piece.piece list) (piece : Piece.piece) =

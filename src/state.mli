@@ -5,11 +5,19 @@ type state
 val board : state -> string list list
 (** [board st] is the GUI representation of the state's board. *)
 
+val board_info : state -> (char * int) option list -> string list list
+(** [board_info st moves ] is the GUI representation of the state's board with
+    all possible moves for a piece at it's current location highlighted. *)
+
 val get_board : state -> Board.board
 (** [get_board st] returns the state's board. *)
 
+val possible_moves : state -> char * int -> (char * int) option list
+(** [possible moves st pos] is all the possible moves a piece can make from
+    [pos]. *)
+
 val graveyard : state -> string list
-(* [graveyard st] is the GUI represenation of the state's graveyard. *)
+(** [graveyard st] is the GUI represenation of the state's graveyard. *)
 
 val create_state : Board.board -> state
 (** [create state board] initializes a game with starting board.*)

@@ -210,12 +210,14 @@ let past_helper st =
   | h :: t -> ("Past Moves: " ^ h, "")
   | [] -> ("", "")
 
-let rec play_game_helper st =
+let rec play_game_helper st info =
   print_endline "";
-  let past_moves = past_helper st in
-  print_board (State.board st)
-    (grave_helper (State.graveyard st) [ []; []; []; [] ])
-    past_moves;
+  if info then
+    let past_moves = past_helper st in
+    print_board (State.board st)
+      (grave_helper (State.graveyard st) [ []; []; []; [] ])
+      past_moves
+  else ();
   if State.get_turn st mod 2 = 1 then
     print_endline
       "\n\n\
@@ -233,7 +235,7 @@ let rec play_game_helper st =
       print_endline "";
       ANSITerminal.print_string [ ANSITerminal.red ]
         "      This is not a valid move command. Please try again! ";
-      play_game_helper st
+      play_game_helper st true
   | Move (x, y) -> (
       let x' = coordinate_converter x false in
       let y' = coordinate_converter y false in
@@ -244,6 +246,7 @@ let rec play_game_helper st =
           (State.update_state false st
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
+          true
       with exn ->
         print_endline "";
         if State.get_turn st mod 2 = 1 then
@@ -252,7 +255,7 @@ let rec play_game_helper st =
         else
           ANSITerminal.print_string [ ANSITerminal.red ]
             "   Attempted move is not a valid black move. Please try again! ";
-        play_game_helper st)
+        play_game_helper st true)
   | Castle (x, y) -> (
       let x' = coordinate_converter x false in
       let y' = coordinate_converter y false in
@@ -261,17 +264,31 @@ let rec play_game_helper st =
           (State.update_state true st
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
+          true
       with exn ->
         print_endline "";
         print_endline "This is not a valid castle. Please try again: ";
-        play_game_helper st)
+        play_game_helper st true)
+  | Info (x, _) ->
+      let x' = coordinate_converter x false in
+      let move_list =
+        State.possible_moves st (x'.[0], int_of_char x'.[1] - 48)
+      in
+      let board = State.board_info st move_list in
+      let past_moves = past_helper st in
+      let _ =
+        print_board board
+          (grave_helper (State.graveyard st) [ []; []; []; [] ])
+          past_moves
+      in
+      play_game_helper st false
   | Quit ->
       print_endline "\n           Game over. Hope you enjoyed playing!\n";
       exit 0
 
 (** [play_game new_board] starts the chess game. *)
 let play_game new_board =
-  play_game_helper (State.create_state (Board.init_board new_board))
+  play_game_helper (State.create_state (Board.init_board new_board)) true
 
 let rec main_helper start n =
   match start with

@@ -83,7 +83,30 @@ and check_opponent st king_moves board color =
            pieces))
     king_moves
 
+let possible_moves st (pos : char * int) =
+  let pos' = ref pos in
+  let x = fst !pos' in
+  let y = snd !pos' in
+  let moves = ref [] in
+  for row = 1 to 8 do
+    for col = 1 to 8 do
+      try
+        let _ =
+          Board.move st.board
+            (Some (x, y))
+            (Some (char_of_int (row + 96), col))
+            false
+            (try List.hd st.past_moves
+             with Failure e -> (Some ('h', 1), Some ('h', 8)))
+        in
+        moves := Some (char_of_int (row + 96), col) :: !moves
+      with _ -> moves := None :: !moves
+    done
+  done;
+  !moves
+
 let board st = Board.board_to_list st.board
+let board_info st moves = Board.board_info_to_list st.board moves
 let get_board st = st.board
 let graveyard st = Board.graveyard st.board
 

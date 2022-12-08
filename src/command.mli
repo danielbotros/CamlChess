@@ -8,7 +8,7 @@ type object_phrase = string * string
     internal, or trailing spaces. The list is in the same order as the words in
     the original player command. For example:
 
-    - If the player command is ["go e2 e4"], then the object phrase is
+    - If the player command is ["move e2 e4"], then the object phrase is
       [\["e2"; "e4"\]].
 
     - If the player command is ["go e2     e4"], then the object phrase is again
@@ -16,10 +16,11 @@ type object_phrase = string * string
 
 (** The type [command] represents a player command that is decomposed into a
     verb and possibly an object phrase. Invariant: the [object_phrase] carried
-    by [Go] must not be empty. *)
+    by [Move] must not be empty. *)
 type command =
   | Move of object_phrase
   | Castle of object_phrase
+  | Info of object_phrase
   | Quit
 
 exception Empty
@@ -42,6 +43,7 @@ val parse : string -> command
     Raises: [Empty] if [str] is the empty string or contains only spaces.
 
     Raises: [Malformed] if the command is malformed. A command is malformed if
-    the verb is neither "quit" nor "go", or if the verb is "quit" and there is a
-    non-empty object phrase, or if the verb is "go" and there is an empty object
-    phrase.*)
+    the verb is neither "quit", "castle", "info" nor "move", or if the verb is
+    "quit" and there is a non-empty object phrase, or if the verb is "go" and
+    there is an empty object. A command is also malformed if it's object_phrase
+    is not a valid position on the board. phrase.*)
