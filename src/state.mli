@@ -2,6 +2,9 @@ type state
 (** The type [state] represents a game state and the information relevant to it,
     such as the board, a list of past moves, and current turn. *)
 
+val most_recent_black_move : state -> (char * int) option * (char * int) option
+(** [most_recent move st] is the most recent move made by black for this state. *)
+
 val board : state -> string list list
 (** [board st] is the GUI representation of the state's board. *)
 
@@ -23,9 +26,10 @@ val create_state : Board.board -> state
 (** [create state board] initializes a game with starting board.*)
 
 val update_state :
-  bool -> state -> (char * int) option -> (char * int) option -> state
-(** [update state board old_pos new_pos] updates the game state after one player
-    turn by moving a piece, adding the move to the move list, and changing turns*)
+  bool -> bool -> state -> (char * int) option -> (char * int) option -> state
+(** [update castle ai state old_pos new_pos] updates the game state after one
+    player turn by moving a piece, adding the move to the move list, and
+    changing turns. *)
 
 val get_turn : state -> int
 (** [get_turn st] returns the integer representing current turn*)
@@ -33,4 +37,4 @@ val get_turn : state -> int
 val get_past_moves : state -> string list * ((char * int) * (char * int)) list
 (** [get_past_moves st] returns a pair of the list of pieces moved (such as "♙")
     as strings along with the list of past moves (as in the coordinates) by both
-    players*)
+    players. *)

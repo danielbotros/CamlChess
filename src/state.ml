@@ -13,6 +13,8 @@ let get_past_moves st =
   ( st.past_moves_pieces,
     st.past_moves |> List.map (fun (x, y) -> (Option.get x, Option.get y)) )
 
+let most_recent_black_move st = List.nth st.past_moves 2
+
 let rec valid_move { board; graveyard; past_moves; turn } pos =
   let color = if turn mod 2 = 1 then "White" else "Black" in
   valid_pos board color pos
@@ -47,7 +49,7 @@ and valid_king_moves st board color =
           Board.move board
             (Some (x, y))
             (Some (char_of_int (row + 96), col))
-            false
+            false true
             (try List.hd st.past_moves
              with Failure e -> (Some ('h', 1), Some ('h', 8)))
         in
@@ -74,7 +76,7 @@ and check_opponent st king_moves board color =
            (fun piece_pos ->
              try
                let _ =
-                 Board.move board piece_pos king_pos false
+                 Board.move board piece_pos king_pos false true
                    (try List.hd st.past_moves
                     with Failure e -> (Some ('h', 1), Some ('h', 8)))
                in
@@ -95,7 +97,7 @@ let possible_moves st (pos : char * int) =
           Board.move st.board
             (Some (x, y))
             (Some (char_of_int (row + 96), col))
-            false
+            false true
             (try List.hd st.past_moves
              with Failure e -> (Some ('h', 1), Some ('h', 8)))
         in
@@ -119,7 +121,7 @@ let create_state lst =
     turn = 1;
   }
 
-let update_state (castle : bool) st (old_pos : (char * int) option)
+let update_state (castle : bool) (ai : bool) st (old_pos : (char * int) option)
     (new_pos : (char * int) option) =
   if valid_move st old_pos then
     {
@@ -129,7 +131,7 @@ let update_state (castle : bool) st (old_pos : (char * int) option)
            (try List.hd st.past_moves
             with Failure e -> (Some ('h', 1), Some ('h', 8)))
         else
-          Board.move st.board old_pos new_pos false
+          Board.move st.board old_pos new_pos false ai
             (try List.hd st.past_moves
              with Failure e -> (Some ('h', 1), Some ('h', 8))));
       graveyard = Board.graveyard st.board;

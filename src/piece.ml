@@ -21,8 +21,6 @@ type piece_type =
   | Rook
   | Bishop
 
-type position = (char * int) option
-
 type piece = {
   piece_type : piece_type;
   position : (char * int) option;
@@ -77,19 +75,24 @@ let should_promote piece =
   | Pawn true -> true
   | _ -> false
 
-let rec promote_pawn pawn =
-  print_endline
-    "\n\
-    \ Enter the desired promotion for this pawn (queen, rook, bishop, or \
-     knight):";
-  match read_line () with
-  | "queen" -> { pawn with piece_type = Queen }
-  | "rook" -> { pawn with piece_type = Rook }
-  | "bishop" -> { pawn with piece_type = Bishop }
-  | "knight" -> { pawn with piece_type = Knight }
-  | _ ->
-      print_endline "Try again:";
-      promote_pawn pawn
+let rec promote_pawn pawn ai =
+  if ai then { pawn with piece_type = Queen }
+  else
+    let () =
+      print_endline
+        "\n\
+        \  Enter the desired\n\
+        \   promotion\n\
+        \  for this pawn (queen, rook, bishop, or knight):"
+    in
+    match read_line () with
+    | "queen" -> { pawn with piece_type = Queen }
+    | "rook" -> { pawn with piece_type = Rook }
+    | "bishop" -> { pawn with piece_type = Bishop }
+    | "knight" -> { pawn with piece_type = Knight }
+    | _ ->
+        print_endline "Try\n\n   again:";
+        promote_pawn pawn false
 
 let is_king piece = get_piece_type piece = King
 let is_queen piece = get_piece_type piece = Queen

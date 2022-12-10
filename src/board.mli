@@ -67,6 +67,7 @@ val move :
   (char * int) option ->
   (char * int) option ->
   bool ->
+  bool ->
   (char * int) option * (char * int) option ->
   board
 (** [move board old_pos new_pos castle prev_move] is the updated board after

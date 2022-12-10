@@ -54,11 +54,18 @@ let board_info_to_list (board : Piece.piece list)
         if y = 9 then []
         else
           try
-            (List.find
-               (fun a -> Piece.get_position a = Some (char_of_int (x + 96), y))
-               board
-            |> Piece.piece_to_string)
-            :: col (y + 1)
+            if
+              List.exists
+                (fun pos' -> pos' = Some (char_of_int (x + 96), y))
+                moves_lst
+            then "✓" :: col (y + 1)
+            else
+              (List.find
+                 (fun a ->
+                   Piece.get_position a = Some (char_of_int (x + 96), y))
+                 board
+              |> Piece.piece_to_string)
+              :: col (y + 1)
           with Not_found ->
             let square =
               let pos = Some (char_of_int (x + 96), y) in
@@ -134,7 +141,7 @@ let en_passant board piece old_pos new_pos prev_move =
   | _, _ -> failwith "Impossible"
 
 let move (board : Piece.piece list) (old_pos : (char * int) option)
-    (new_pos : (char * int) option) (castle : bool)
+    (new_pos : (char * int) option) (castle : bool) (ai : bool)
     (prev_move : (char * int) option * (char * int) option) : board =
   let piece = get_piece board old_pos in
   if en_passant board piece old_pos new_pos prev_move then
@@ -166,7 +173,10 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
           &&
           if Piece.is_black piece then
             Validate.valid_pawn_move_black old_pos new_pos
-          else Validate.valid_pawn_move_white old_pos new_pos
+              (Piece.is_first_move piece)
+          else
+            Validate.valid_pawn_move_white old_pos new_pos
+              (Piece.is_first_move piece)
         then true
         else false
       else if castle then true
@@ -182,12 +192,12 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
         let board'' = add_piece board' captured_piece_updated in
         let board''' = remove_piece board'' piece in
         match Piece.should_promote piece' with
-        | true -> add_piece board''' (Piece.promote_pawn piece')
+        | true -> add_piece board''' (Piece.promote_pawn piece' ai)
         | false -> add_piece board''' piece'
       else
         match Piece.should_promote piece' with
         | true ->
-            add_piece (remove_piece board piece) (Piece.promote_pawn piece')
+            add_piece (remove_piece board piece) (Piece.promote_pawn piece' ai)
         | false -> add_piece (remove_piece board piece) piece'
     else raise InvalidMove
 
@@ -208,31 +218,31 @@ let castle (board : Piece.piece list) (old_pos : (char * int) option)
         let rook = get_piece board (Some ('h', 1)) in
         let fm_rook = Piece.is_first_move rook in
         if fm_king && fm_rook then
-          let board' = move board old_pos new_pos true prev_move in
-          move board' (Some ('h', 1)) (Some ('h', 4)) true prev_move
+          let board' = move board old_pos new_pos true false prev_move in
+          move board' (Some ('h', 1)) (Some ('h', 4)) true false prev_move
         else raise InvalidMove
       else if x = 'h' && y > 4 then
         (* White Kingside *)
         let rook = get_piece board (Some ('h', 8)) in
         let fm_rook = Piece.is_first_move rook in
         if fm_king && fm_rook then
-          let board' = move board old_pos new_pos true prev_move in
-          move board' (Some ('h', 8)) (Some ('h', 6)) true prev_move
+          let board' = move board old_pos new_pos true false prev_move in
+          move board' (Some ('h', 8)) (Some ('h', 6)) true false prev_move
         else raise InvalidMove
       else if x = 'a' && y < 4 then
         (* Black Queenside *)
         let rook = get_piece board (Some ('a', 1)) in
         let fm_rook = Piece.is_first_move rook in
         if fm_king && fm_rook then
-          let board' = move board old_pos new_pos true prev_move in
-          move board' (Some ('a', 1)) (Some ('a', 4)) true prev_move
+          let board' = move board old_pos new_pos true false prev_move in
+          move board' (Some ('a', 1)) (Some ('a', 4)) true false prev_move
         else raise InvalidMove
       else if x = 'a' && y > 4 then
         (* Black Kingside *)
         let rook = get_piece board (Some ('a', 8)) in
         let fm_rook = Piece.is_first_move rook in
         if fm_king && fm_rook then
-          let board' = move board old_pos new_pos true prev_move in
-          move board' (Some ('a', 8)) (Some ('a', 6)) true prev_move
+          let board' = move board old_pos new_pos true false prev_move in
+          move board' (Some ('a', 8)) (Some ('a', 6)) true false prev_move
         else raise InvalidMove
       else raise InvalidMove

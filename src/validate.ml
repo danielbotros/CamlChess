@@ -60,18 +60,22 @@ let valid_pawn_attack_black pos1 pos2 =
       (r2 |> char_to_int) - (r1 |> char_to_int) = 1 && c1 - c2 |> abs = 1
   | _ -> false
 
-let valid_pawn_move_white pos1 pos2 =
+let valid_pawn_move_white pos1 pos2 first_move =
   match (pos1, pos2) with
   | Some (r1, c1), Some (r2, c2) ->
       ((r2 |> char_to_int) - (r1 |> char_to_int) = -1 && c1 - c2 |> abs = 0)
-      || ((r2 |> char_to_int) - (r1 |> char_to_int) = -2 && c1 - c2 = 0)
+      || (r2 |> char_to_int) - (r1 |> char_to_int) = -2
+         && c1 - c2 = 0
+         && first_move
   | _ -> false
 
-let valid_pawn_move_black pos1 pos2 =
+let valid_pawn_move_black pos1 pos2 first_move =
   match (pos1, pos2) with
   | Some (r1, c1), Some (r2, c2) ->
       ((r2 |> char_to_int) - (r1 |> char_to_int) = 1 && c1 - c2 |> abs = 0)
-      || ((r2 |> char_to_int) - (r1 |> char_to_int) = 2 && c1 - c2 = 0)
+      || (r2 |> char_to_int) - (r1 |> char_to_int) = 2
+         && c1 - c2 = 0
+         && first_move
   | _ -> false
 
 let valid_knight_move pos1 pos2 =

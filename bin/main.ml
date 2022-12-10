@@ -223,13 +223,18 @@ let rec play_game_helper st info =
       "\n\n\
       \                     【  Turn: White  】 \n\
       \ Enter your desired move (for example: move e2 e3) or 'quit' to exit:"
-  else
+  else (
     print_endline
       "\n\n\
       \                     〖  Turn: Black  〗\n\
       \ Enter your desired move (for example: move e7 e6) or 'quit' to exit:";
+    print_endline " \n Ai is thinking...");
   print_endline "";
-  print_string "> ";
+  if State.get_turn st mod 2 = 0 then
+    let state = Ai.optimal_state st in
+    let () = print_string "> Oh, I know!" in
+    play_game_helper state true
+  else print_string "> ";
   match Command.parse (read_line ()) with
   | exception _ ->
       print_endline "";
@@ -243,7 +248,7 @@ let rec play_game_helper st info =
          true); *)
       try
         play_game_helper
-          (State.update_state false st
+          (State.update_state false false st
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
           true
@@ -261,7 +266,7 @@ let rec play_game_helper st info =
       let y' = coordinate_converter y false in
       try
         play_game_helper
-          (State.update_state true st
+          (State.update_state true false st
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
           true

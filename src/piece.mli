@@ -54,8 +54,9 @@ val is_pawn : piece -> bool
 val should_promote : piece -> bool
 (** [should_promote piece] is true if [piece] is type Pawn true, false otherwise*)
 
-val promote_pawn : piece -> piece
-(** [promote_pawn pawn s] changes the pawn to the piece_type given in string s*)
+val promote_pawn : piece -> bool -> piece
+(** [promote_pawn pawn s ai] changes the pawn to the piece_type given in string
+    s*)
 
 val is_king : piece -> bool
 (** [is_king piece] is true if [piece] is a king, false otherwise. *)
