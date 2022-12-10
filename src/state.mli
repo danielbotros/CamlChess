@@ -2,9 +2,6 @@ type state
 (** The type [state] represents a game state and the information relevant to it,
     such as the board, a list of past moves, and current turn. *)
 
-val most_recent_black_move : state -> (char * int) option * (char * int) option
-(** [most_recent move st] is the most recent move made by black for this state. *)
-
 val board : state -> string list list
 (** [board st] is the GUI representation of the state's board. *)
 

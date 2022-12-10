@@ -13,8 +13,6 @@ let get_past_moves st =
   ( st.past_moves_pieces,
     st.past_moves |> List.map (fun (x, y) -> (Option.get x, Option.get y)) )
 
-let most_recent_black_move st = List.nth st.past_moves 2
-
 let rec valid_move { board; graveyard; past_moves; turn } pos =
   let color = if turn mod 2 = 1 then "White" else "Black" in
   valid_pos board color pos
