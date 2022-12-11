@@ -1,4 +1,4 @@
-let difficulty = 2
+let difficulty = 1
 
 let get_pos pos =
   match pos with
@@ -136,15 +136,15 @@ let rec accumlate_score state depth =
     (List.map
        (fun next_state ->
          if depth = 0 then evaluate next_state
-         else evaluate next_state +. accumlate_score next_state (depth - 1))
+         else accumlate_score next_state (depth - 1))
        (get_all_states state))
 
 let optimal_state st =
   let next_moves = get_all_states st in
-  snd
-    (lst_max
-       (List.map
-          (fun next_move ->
-            ( evaluate next_move +. accumlate_score next_move difficulty,
-              next_move ))
-          next_moves))
+  let os =
+    List.map
+      (fun next_move -> (accumlate_score next_move difficulty, next_move))
+      next_moves
+  in
+  let os_score = lst_max (List.map (fun (score, _) -> score) os) in
+  snd (List.find (fun (score, _) -> score = os_score) os)
