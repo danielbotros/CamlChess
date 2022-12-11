@@ -133,7 +133,8 @@ let en_passant board piece old_pos new_pos prev_move =
   | (Some (r1, c1) as old_position), (Some (r2, c2) as new_position) ->
       let piece_en_passant = get_piece board new_position in
       let white = Piece.is_white piece in
-      Piece.is_pawn piece_en_passant
+      Piece.is_pawn piece
+      && Piece.is_pawn piece_en_passant
       && Validate.is_in_en_passant old_position new_position white
       && (if white then Validate.valid_pawn_attack_white old_pos new_pos
          else Validate.valid_pawn_attack_black old_pos new_pos)
