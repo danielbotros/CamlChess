@@ -135,9 +135,20 @@ let update_state (castle : bool) (ai : bool) st (old_pos : (char * int) option)
       graveyard = Board.graveyard st.board;
       past_moves = (old_pos, new_pos) :: st.past_moves;
       past_moves_pieces =
-        (string_of_int st.turn ^ "."
-        ^ (old_pos |> Board.get_piece st.board |> Piece.piece_to_string))
-        :: st.past_moves_pieces;
+        (if st.turn mod 2 = 1 then
+         if (st.turn + 1) / 2 >= 10 then
+           (string_of_int ((st.turn + 1) / 2)
+           ^ ". "
+           ^ (old_pos |> Board.get_piece st.board |> Piece.piece_to_string))
+           :: st.past_moves_pieces
+         else
+           (string_of_int ((st.turn + 1) / 2)
+           ^ ".  "
+           ^ (old_pos |> Board.get_piece st.board |> Piece.piece_to_string))
+           :: st.past_moves_pieces
+        else
+          (old_pos |> Board.get_piece st.board |> Piece.piece_to_string)
+          :: st.past_moves_pieces);
       turn = st.turn + 1;
     }
   else failwith "invalid move"

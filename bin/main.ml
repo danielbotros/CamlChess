@@ -51,7 +51,7 @@ let coordinate_converter (cmd : string) (rev : bool) =
     coordinate_converter_col cmd.[1] false
     ^ coordinate_converter_row cmd.[0] false
 
-let print_board board grave (moves1, moves2) =
+let print_board board grave (moves1, moves2, moves3) =
   let rec helper c bd gr =
     match (bd, gr) with
     | [], [ []; []; []; [] ] ->
@@ -99,28 +99,38 @@ let print_board board grave (moves1, moves2) =
           ("                 ―   ―   ―   ―   ―   ―   ―   \
             ―                       " ^ String.concat " | " b2);
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
-    | h_b :: t_b, [ []; []; b1; b2 ] ->
+    | h_b1 :: h_b2 :: t_b, [ []; []; b1; b2 ] ->
         if c = '8' then (
           print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
           print_endline
-            ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
-           ^ " |");
+            ("          " ^ String.make 1 c ^ "    | "
+           ^ String.concat "   " h_b1 ^ " |");
           print_endline "";
-          helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ])
+          helper
+            (char_of_int (int_of_char c - 1))
+            (h_b2 :: t_b) [ []; []; b1; b2 ])
         else if c = '5' then (
           print_endline
-            ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
-           ^ " |" ^ "     " ^ moves1);
+            ("          " ^ String.make 1 c ^ "    | "
+           ^ String.concat "   " h_b1 ^ " |" ^ "     " ^ moves1);
           print_endline
             ("                                                                 "
            ^ moves2);
-          helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ])
+          print_endline
+            ("          "
+            ^ String.make 1 (char_of_int (int_of_char c - 1))
+            ^ "    | " ^ String.concat "   " h_b2 ^ " |" ^ "                 "
+            ^ moves3);
+          print_endline "";
+          helper (char_of_int (int_of_char c - 2)) t_b [ []; []; b1; b2 ])
         else (
           print_endline
-            ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b
-           ^ " |");
+            ("          " ^ String.make 1 c ^ "    | "
+           ^ String.concat "   " h_b1 ^ " |");
           print_endline "";
-          helper (char_of_int (int_of_char c - 1)) t_b [ []; []; b1; b2 ])
+          helper
+            (char_of_int (int_of_char c - 1))
+            (h_b2 :: t_b) [ []; []; b1; b2 ])
     | h_b :: t_b, [ w1; []; b1; b2 ] ->
         print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
         print_endline
@@ -133,12 +143,13 @@ let print_board board grave (moves1, moves2) =
         print_endline
           ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b1
          ^ " |    White Graveyard: " ^ String.concat " | " w1);
-        print_endline "";
+        print_endline
+          ("                                                                     "
+         ^ String.concat " | " w2);
         print_endline
           ("          "
           ^ String.make 1 (char_of_int (int_of_char c - 1))
-          ^ "    | " ^ String.concat "   " h_b2 ^ " |                     "
-          ^ String.concat " | " w2 ^ " | ");
+          ^ "    | " ^ String.concat "   " h_b2 ^ " |                     ");
         print_endline "";
         helper (char_of_int (int_of_char c - 2)) t_b [ []; []; b1; b2 ]
     | _, _ -> failwith "Impossible"
@@ -200,16 +211,16 @@ let past_moves st =
 let past_helper st =
   match past_moves st with
   | h1 :: h2 :: h3 :: h4 :: h5 :: h6 :: t ->
-      ( "Past Moves: " ^ h1 ^ " | " ^ h2 ^ " | " ^ h3,
-        h4 ^ " | " ^ h5 ^ " | " ^ h6 )
-  | h1 :: h2 :: h3 :: h4 :: h5 :: t ->
-      ("Past Moves: " ^ h1 ^ " | " ^ h2 ^ " | " ^ h3, h4 ^ " | " ^ h5)
-  | h1 :: h2 :: h3 :: h4 :: t ->
-      ("Past Moves: " ^ h1 ^ " | " ^ h2 ^ " | " ^ h3, h4)
-  | h1 :: h2 :: h3 :: t -> ("Past Moves: " ^ h1 ^ " | " ^ h2 ^ " | " ^ h3, "")
-  | h1 :: h2 :: t -> ("Past Moves: " ^ h1 ^ " | " ^ h2, "")
-  | h :: t -> ("Past Moves: " ^ h, "")
-  | [] -> ("", "")
+      if State.get_turn st mod 2 = 0 then
+        ("Past Moves: " ^ h5 ^ " | " ^ h4, h3 ^ " | " ^ h2, h1)
+      else ("Past Moves: " ^ h6 ^ " | " ^ h5, h4 ^ " | " ^ h3, h2 ^ " | " ^ h1)
+  | [ h1; h2; h3; h4; h5 ] ->
+      ("Past Moves: " ^ h5 ^ " | " ^ h4, h3 ^ " | " ^ h2, h1)
+  | [ h1; h2; h3; h4 ] -> ("Past Moves: " ^ h4 ^ " | " ^ h3, h2 ^ " | " ^ h1, "")
+  | [ h1; h2; h3 ] -> ("Past Moves: " ^ h3 ^ " | " ^ h2, h1, "")
+  | [ h1; h2 ] -> ("Past Moves: " ^ h2 ^ " | " ^ h1, "", "")
+  | [ h ] -> ("Past Moves: " ^ h, "", "")
+  | [] -> ("", "", "")
 
 let rec play_game_helper st info ai =
   print_endline "";
