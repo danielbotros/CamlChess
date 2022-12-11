@@ -147,9 +147,10 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
   let piece = get_piece board old_pos in
   if en_passant board piece old_pos new_pos prev_move then
     let piece' = Piece.move_piece piece new_pos in
-    remove_piece
-      (remove_piece (add_piece board piece') piece)
-      (get_piece board (snd prev_move))
+    let piece_en_passant =
+      Piece.capture_piece (get_piece board (snd prev_move))
+    in
+    remove_piece (remove_piece (add_piece board piece') piece) piece_en_passant
   else
     let captured_piece_list =
       List.filter
