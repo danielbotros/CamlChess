@@ -79,11 +79,11 @@ let rec promote_pawn pawn ai =
   if ai then { pawn with piece_type = Queen }
   else
     let () =
-      print_endline
+      print_string
         "\n\
-        \  Enter the desired\n\
-        \   promotion\n\
-        \  for this pawn (queen, rook, bishop, or knight):"
+         Enter the desired promotion for this pawn (queen, rook, bishop, or \
+         knight):  \n\
+        \ > "
     in
     match read_line () with
     | "queen" -> { pawn with piece_type = Queen }

@@ -32,6 +32,6 @@ val get_turn : state -> int
 (** [get_turn st] returns the integer representing current turn*)
 
 val get_past_moves : state -> string list * ((char * int) * (char * int)) list
-(** [get_past_moves st] returns a pair of the list of pieces moved (such as "♙")
-    as strings along with the list of past moves (as in the coordinates) by both
-    players. *)
+(** [get_past_moves st] returns a pair of the list of pieces moved at each turn
+    (such as "1. ♙") as strings along with the list of past moves (as in the
+    coordinates) by both players. *)

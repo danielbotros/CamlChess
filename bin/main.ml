@@ -88,15 +88,16 @@ let print_board board grave (moves1, moves2) =
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | [ h_b1; h_b2 ], [ []; []; b1; b2 ] ->
         print_endline
-          ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b1
-         ^ " |    Black Graveyard: " ^ String.concat " | " b1);
+          ("          " ^ String.make 1 c ^ "    | " ^ String.concat "   " h_b1);
         print_endline "";
         print_endline
           ("          "
           ^ String.make 1 (char_of_int (int_of_char c - 1))
-          ^ "    | " ^ String.concat "   " h_b2 ^ " |                     "
-          ^ String.concat " | " b2);
-        print_endline "                 ―   ―   ―   ―   ―   ―   ―   ―";
+          ^ "    | " ^ String.concat "   " h_b2 ^ " |    Black Graveyard: "
+          ^ String.concat " | " b1);
+        print_endline
+          ("                 ―   ―   ―   ―   ―   ―   ―   \
+            ―                       " ^ String.concat " | " b2);
         helper (char_of_int (int_of_char c - 2)) [] [ []; []; []; [] ]
     | h_b :: t_b, [ []; []; b1; b2 ] ->
         if c = '8' then (
@@ -305,7 +306,7 @@ let rec main_helper start n =
   | "yes" ->
       let rec ai_helper x =
         print_endline
-          "\n\n Would you like to play with AI? (Enter \"yes\" or  \"no\")";
+          "\n\n Would you like to play with AI? (Enter \"yes\" or \"no\")";
         print_endline "";
         print_string "> ";
         match read_line () with

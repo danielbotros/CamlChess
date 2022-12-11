@@ -135,7 +135,8 @@ let update_state (castle : bool) (ai : bool) st (old_pos : (char * int) option)
       graveyard = Board.graveyard st.board;
       past_moves = (old_pos, new_pos) :: st.past_moves;
       past_moves_pieces =
-        (old_pos |> Board.get_piece st.board |> Piece.piece_to_string)
+        (string_of_int st.turn ^ "."
+        ^ (old_pos |> Board.get_piece st.board |> Piece.piece_to_string))
         :: st.past_moves_pieces;
       turn = st.turn + 1;
     }
