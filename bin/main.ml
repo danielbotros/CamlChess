@@ -210,7 +210,7 @@ let past_helper st =
   | h :: t -> ("Past Moves: " ^ h, "")
   | [] -> ("", "")
 
-let rec play_game_helper st info =
+let rec play_game_helper st info ai =
   print_endline "";
   if info then
     let past_moves = past_helper st in
@@ -218,29 +218,34 @@ let rec play_game_helper st info =
       (grave_helper (State.graveyard st) [ []; []; []; [] ])
       past_moves
   else ();
-  if State.get_turn st mod 2 = 1 then
-    print_endline
-      "\n\n\
-      \                     【  Turn: White  】 \n\
-      \ Enter your desired move (for example: move e2 e3) or 'quit' to exit:"
-  else (
+  if State.get_turn st mod 2 = 0 && ai then (
     print_endline
       "\n\n\
       \                     〖  Turn: Black  〗\n\
       \ Enter your desired move (for example: move e7 e6) or 'quit' to exit:";
-    print_endline " \n Ai is thinking...");
-  print_endline "";
-  if State.get_turn st mod 2 = 0 then
+    print_endline " \n AI is thinking...";
+    print_endline "")
+  else if State.get_turn st mod 2 = 0 then
+    print_endline
+      "\n\n\
+      \                     〖  Turn: Black  〗\n\
+      \ Enter your desired move (for example: move e7 e6) or 'quit' to exit:"
+  else
+    print_endline
+      "\n\n\
+      \                     【  Turn: White  】 \n\
+      \ Enter your desired move (for example: move e2 e3) or 'quit' to exit:";
+  if State.get_turn st mod 2 = 0 && ai then
     let state = Ai.optimal_state st in
     let () = print_string "> Oh, I know!" in
-    play_game_helper state true
+    play_game_helper state true ai
   else print_string "> ";
   match Command.parse (read_line ()) with
   | exception _ ->
       print_endline "";
       ANSITerminal.print_string [ ANSITerminal.red ]
         "      This is not a valid move command. Please try again! ";
-      play_game_helper st true
+      play_game_helper st true ai
   | Move (x, y) -> (
       let x' = coordinate_converter x false in
       let y' = coordinate_converter y false in
@@ -251,7 +256,7 @@ let rec play_game_helper st info =
           (State.update_state false false st
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
-          true
+          true ai
       with exn ->
         print_endline "";
         if State.get_turn st mod 2 = 1 then
@@ -260,7 +265,7 @@ let rec play_game_helper st info =
         else
           ANSITerminal.print_string [ ANSITerminal.red ]
             "   Attempted move is not a valid black move. Please try again! ";
-        play_game_helper st true)
+        play_game_helper st true ai)
   | Castle (x, y) -> (
       let x' = coordinate_converter x false in
       let y' = coordinate_converter y false in
@@ -269,11 +274,11 @@ let rec play_game_helper st info =
           (State.update_state true false st
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
-          true
+          true ai
       with exn ->
         print_endline "";
         print_endline "This is not a valid castle. Please try again: ";
-        play_game_helper st true)
+        play_game_helper st true ai)
   | Info (x, _) ->
       let x' = coordinate_converter x false in
       let move_list =
@@ -286,23 +291,37 @@ let rec play_game_helper st info =
           (grave_helper (State.graveyard st) [ []; []; []; [] ])
           past_moves
       in
-      play_game_helper st false
+      play_game_helper st false ai
   | Quit ->
       print_endline "\n           Game over. Hope you enjoyed playing!\n";
       exit 0
 
 (** [play_game new_board] starts the chess game. *)
-let play_game new_board =
-  play_game_helper (State.create_state (Board.init_board new_board)) true
+let rec play_game new_board ai =
+  play_game_helper (State.create_state (Board.init_board new_board)) true ai
 
 let rec main_helper start n =
   match start with
   | "yes" ->
-      ANSITerminal.print_string [ ANSITerminal.yellow ]
-        "\n\n         ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
-      (* print_string "Welcome to your Game of Chess! "; *)
-      (* ANSITerminal.print_string [ ANSITerminal.yellow ] "♔  ♛\n"; *)
-      play_game new_board
+      let rec ai_helper x =
+        print_endline
+          "\n\n Would you like to play with AI? (Enter \"yes\" or  \"no\")";
+        print_endline "";
+        print_string "> ";
+        match read_line () with
+        | "yes" | "AI" ->
+            ANSITerminal.print_string [ ANSITerminal.yellow ]
+              "\n\n         ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
+            play_game new_board true
+        | "no" ->
+            ANSITerminal.print_string [ ANSITerminal.yellow ]
+              "\n\n         ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
+            play_game new_board false
+        | _ ->
+            print_endline "\n             I don't understand.";
+            ai_helper 1
+      in
+      ai_helper 1
   | "no" ->
       begin
         match n mod 3 with
