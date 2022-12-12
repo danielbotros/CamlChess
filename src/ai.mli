@@ -3,9 +3,6 @@ val difficulty : int
     [difficulty]+2 is the number of moves ahead the AI will think. It's default
     value is 2. *)
 
-val get_pos : (char * int) option -> char * int
-(** [get_pos pos] is the unwrapped value of [pos] from it's option. *)
-
 val white_pawns : State.state -> float
 (** [white_pawns st] is the number of white pawns in this [st]. *)
 
@@ -44,14 +41,6 @@ val black_queens : State.state -> float
 
 val evaluate : State.state -> float
 (** [evaluate st] is the evaluation function / value for this state.*)
-
-val all_moves : State.state -> (char * int) option list list
-(** [all_moves st] is the 2D list of all possible moves with each list
-    representing all possible moves for a piece from it's current position. *)
-
-val get_all_states : State.state -> State.state list
-(** [get_all_states st] is all the possible legal game states that can be
-    derived from [st]. *)
 
 val lst_max : 'a list -> 'a
 (** [lst_max lst] is the maximum value of this [lst]. *)

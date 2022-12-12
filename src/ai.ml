@@ -1,10 +1,5 @@
 let difficulty = 1
 
-let get_pos pos =
-  match pos with
-  | None -> failwith "Impossible"
-  | Some (c, i) -> (c, i)
-
 let white_pawns st =
   List.fold_left
     (fun acc piece ->
@@ -97,38 +92,6 @@ let evaluate st =
   +. (3. *. (black_bishops st -. white_bishops st))
   +. (1. *. (black_pawns st -. white_pawns st))
 
-let all_moves st =
-  List.map
-    (fun piece ->
-      let pos = Piece.get_position piece in
-      if State.get_turn st mod 2 = 1 then
-        if pos <> None && Piece.is_white piece then
-          State.possible_moves st (get_pos pos)
-        else [ None ]
-      else if pos <> None && Piece.is_black piece then
-        State.possible_moves st (get_pos pos)
-      else [ None ])
-    (Board.get_pieces (State.get_board st))
-
-let get_all_states st =
-  let board = Board.get_pieces (State.get_board st) in
-  let states =
-    List.flatten
-      (List.map2
-         (fun moves_list piece ->
-           let piece_position = Piece.get_position piece in
-           if piece_position <> None then
-             List.map
-               (fun move ->
-                 if move <> None then
-                   State.update_state false true st piece_position move
-                 else st)
-               moves_list
-           else [ st ])
-         (all_moves st) board)
-  in
-  List.filter (fun state -> state <> st) states
-
 let lst_max lst = List.hd (List.rev (List.sort compare lst))
 
 let rec accumlate_score state depth =
@@ -137,10 +100,10 @@ let rec accumlate_score state depth =
        (fun next_state ->
          if depth = 0 then evaluate next_state
          else accumlate_score next_state (depth - 1))
-       (get_all_states state))
+       (State.get_all_states state))
 
 let optimal_state st =
-  let next_moves = get_all_states st in
+  let next_moves = State.get_all_states st in
   let os =
     List.map
       (fun next_move -> (accumlate_score next_move difficulty, next_move))

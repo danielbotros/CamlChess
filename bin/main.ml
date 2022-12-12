@@ -270,15 +270,22 @@ let rec play_game_helper st info ai =
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
           true ai
-      with exn ->
-        print_endline "";
-        if State.get_turn st mod 2 = 1 then
+      with
+      | CheckMate -> print_endline "Checkmate! No more valid moves."
+      | StaleMate -> print_endline "Stalemate! No more valid moves."
+      | Check ->
           ANSITerminal.print_string [ ANSITerminal.red ]
-            "   Attempted move is not a valid white move. Please try again! "
-        else
-          ANSITerminal.print_string [ ANSITerminal.red ]
-            "   Attempted move is not a valid black move. Please try again! ";
-        play_game_helper st true ai)
+            "   Invalid move. This puts your king in check! ";
+          play_game_helper st true ai
+      | exn ->
+          print_endline "";
+          if State.get_turn st mod 2 = 1 then
+            ANSITerminal.print_string [ ANSITerminal.red ]
+              "   Attempted move is not a valid white move. Please try again! "
+          else
+            ANSITerminal.print_string [ ANSITerminal.red ]
+              "   Attempted move is not a valid black move. Please try again! ";
+          play_game_helper st true ai)
   | Castle (x, y) -> (
       let x' = coordinate_converter x false in
       let y' = coordinate_converter y false in
@@ -288,10 +295,17 @@ let rec play_game_helper st info ai =
              (Some (x'.[0], int_of_char x'.[1] - 48))
              (Some (y'.[0], int_of_char y'.[1] - 48)))
           true ai
-      with exn ->
-        print_endline "";
-        print_endline "This is not a valid castle. Please try again: ";
-        play_game_helper st true ai)
+      with
+      | CheckMate -> print_endline "Checkmate! No more valid moves."
+      | StaleMate -> print_endline "Stalemate! No more valid moves."
+      | Check ->
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            "   Invalid move. This puts your king in check! ";
+          play_game_helper st true ai
+      | exn ->
+          print_endline "";
+          print_endline "This is not a valid castle. Please try again: ";
+          play_game_helper st true ai)
   | Info (x, _) ->
       let x' = coordinate_converter x false in
       let move_list =
