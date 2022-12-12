@@ -147,4 +147,5 @@ let optimal_state st =
       next_moves
   in
   let os_score = lst_max (List.map (fun (score, _) -> score) os) in
-  snd (List.find (fun (score, _) -> score = os_score) os)
+  let best_states = List.filter (fun (score, _) -> score = os_score) os in
+  snd (List.nth best_states (Random.int (List.length best_states)))
