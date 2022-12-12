@@ -139,7 +139,7 @@ let is_in_vertical_path (pos1 : (char * int) option)
     (pos2 : (char * int) option) (pos3 : (char * int) option) =
   match (pos1, pos2, pos3) with
   | Some (r1, c1), Some (r2, c2), Some (r3, c3) ->
-      (c1 = c2 && c2 = c3) && ((r1 > r2 && r2 > r3) || (r1 < r2 && r2 < r3))
+      (c1 = c2 && c2 = c3) && ((r1 >= r2 && r2 >= r3) || (r1 <= r2 && r2 <= r3))
   | _ -> false
 
 let is_in_horizontal_path (pos1 : (char * int) option)
