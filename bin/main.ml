@@ -235,7 +235,8 @@ let rec play_game_helper st info ai =
       "\n\n\
       \                     〖  Turn: Black  〗\n\
       \ Enter your desired move (for example: move e7 e6) or 'quit' to exit:";
-    print_endline " \n AI is thinking...";
+    ANSITerminal.print_string [ ANSITerminal.yellow ]
+      " \n                       AI is thinking...";
     print_endline "")
   else if State.get_turn st mod 2 = 0 then
     print_endline
@@ -317,7 +318,7 @@ let rec main_helper start n =
   | "yes" ->
       let rec ai_helper x =
         print_endline
-          "\n\n Would you like to play with AI? (Enter \"yes\" or \"no\")";
+          "\n Would you like to play with AI? (Enter \"yes\" or \"no\")";
         print_endline "";
         print_string "> ";
         match read_line () with
