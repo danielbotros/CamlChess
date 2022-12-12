@@ -1,4 +1,4 @@
-let difficulty = 1
+let difficulty = 2
 
 let get_pos pos =
   match pos with
@@ -138,6 +138,8 @@ let rec accumlate_score state depth =
          if depth = 0 then evaluate next_state
          else accumlate_score next_state (depth - 1))
        (get_all_states state))
+
+let () = Random.self_init ()
 
 let optimal_state st =
   let next_moves = get_all_states st in
