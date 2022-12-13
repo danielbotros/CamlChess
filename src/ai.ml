@@ -108,7 +108,8 @@ let optimal_state st =
   let next_moves = State.get_all_states st in
   let os =
     List.map
-      (fun next_move -> (accumlate_score next_move difficulty, next_move))
+      (fun next_move ->
+        (evaluate next_move +. accumlate_score next_move difficulty, next_move))
       next_moves
   in
   let os_score = lst_max (List.map (fun (score, _) -> score) os) in
