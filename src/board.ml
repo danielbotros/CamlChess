@@ -176,11 +176,9 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
           if Piece.is_black piece then
             Validate.valid_pawn_move_black old_pos new_pos
               (Piece.is_first_move piece)
-            && clear_vertical board old_pos new_pos
           else
             Validate.valid_pawn_move_white old_pos new_pos
               (Piece.is_first_move piece)
-            && clear_vertical board old_pos new_pos
         then true
         else false
       else if castle then true
