@@ -170,9 +170,8 @@ let no_moves st =
 let update_state (castle : bool) (ai : bool) st (old_pos : (char * int) option)
     (new_pos : (char * int) option) =
   let new_state = move_piece castle ai st old_pos new_pos in
-  let no_legal_moves = no_moves new_state in
-  let in_check = can_be_captured new_state in
-  if can_be_captured { new_state with turn = st.turn } then raise Check
-  else if no_legal_moves && in_check then raise CheckMate
-  else if no_legal_moves then raise StaleMate
-  else new_state
+  (* let no_legal_moves = no_moves new_state in let in_check = can_be_captured
+     new_state in if can_be_captured { new_state with turn = st.turn } then
+     raise Check else if no_legal_moves && in_check then raise CheckMate else if
+     no_legal_moves then raise StaleMate *)
+  new_state
