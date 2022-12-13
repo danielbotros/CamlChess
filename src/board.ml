@@ -174,8 +174,23 @@ let move (board : Piece.piece list) (old_pos : (char * int) option)
           List.length captured_piece_list = 0
           &&
           if Piece.is_black piece then
-            Validate.valid_pawn_move_black old_pos new_pos
-              (Piece.is_first_move piece)
+            if
+              Piece.is_first_move piece
+              && (new_pos |> Option.get |> fst |> int_of_char)
+                 - (old_pos |> Option.get |> fst |> int_of_char)
+                 = 2
+              && not (clear_vertical board old_pos new_pos)
+            then raise InvalidMove
+            else
+              Validate.valid_pawn_move_black old_pos new_pos
+                (Piece.is_first_move piece)
+          else if
+            Piece.is_first_move piece
+            && (new_pos |> Option.get |> fst |> int_of_char)
+               - (old_pos |> Option.get |> fst |> int_of_char)
+               = -2
+            && not (clear_vertical board old_pos new_pos)
+          then raise InvalidMove
           else
             Validate.valid_pawn_move_white old_pos new_pos
               (Piece.is_first_move piece)
