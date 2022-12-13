@@ -1,4 +1,4 @@
-1. Downlaod the release code and unzip it with "unzip chess.zip"
+1. Download the release code and unzip it with "unzip chess.zip"
 2. Navigate into the main directory
 3. Run the following commands:
   "opam update",
