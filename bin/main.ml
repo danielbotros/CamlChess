@@ -222,6 +222,28 @@ let past_helper st =
   | [ h ] -> ("Past Moves: " ^ h, "", "")
   | [] -> ("", "", "")
 
+let checkmate_message st =
+  if State.get_turn st mod 4 = 1 then
+    ANSITerminal.print_string [ ANSITerminal.yellow ]
+      "\n\
+      \        No moves can save the Black King now. Checkmate!\n\
+      \                      Thanks for playing! \n\n"
+  else if State.get_turn st mod 4 = 2 then
+    ANSITerminal.print_string [ ANSITerminal.yellow ]
+      "\n\
+      \        Nowhere to go for the White King. Checkmate!\n\
+      \                      Thanks for playing! \n\n"
+  else if State.get_turn st mod 4 = 3 then
+    ANSITerminal.print_string [ ANSITerminal.yellow ]
+      "\n\
+      \         The Black King has fallen. Checkmate!\n\
+      \                      Thanks for playing! \n\n"
+  else if State.get_turn st mod 4 = 0 then
+    ANSITerminal.print_string [ ANSITerminal.yellow ]
+      "\n\
+      \   This is the end of the road for the White King. Checkmate!\n\
+      \                      Thanks for playing! \n\n"
+
 let rec play_game_helper st info ai =
   print_endline "";
   if info then
@@ -271,11 +293,11 @@ let rec play_game_helper st info ai =
              (Some (y'.[0], int_of_char y'.[1] - 48)))
           true ai
       with
-      | CheckMate -> print_endline "Checkmate! No more valid moves."
+      | CheckMate -> checkmate_message st
       | StaleMate -> print_endline "Stalemate! No more valid moves."
       | Check ->
           ANSITerminal.print_string [ ANSITerminal.red ]
-            "   Invalid move. This puts your king in check! ";
+            "          Invalid move. This puts your king in check! ";
           play_game_helper st true ai
       | exn ->
           print_endline "";
@@ -296,15 +318,16 @@ let rec play_game_helper st info ai =
              (Some (y'.[0], int_of_char y'.[1] - 48)))
           true ai
       with
-      | CheckMate -> print_endline "Checkmate! No more valid moves."
+      | CheckMate -> checkmate_message st
       | StaleMate -> print_endline "Stalemate! No more valid moves."
       | Check ->
           ANSITerminal.print_string [ ANSITerminal.red ]
-            "   Invalid move. This puts your king in check! ";
+            "          Invalid move. This puts your king in check! ";
           play_game_helper st true ai
       | exn ->
           print_endline "";
-          print_endline "This is not a valid castle. Please try again: ";
+          print_endline
+            "         This is not a valid castle. Please try again: ";
           play_game_helper st true ai)
   | Info (x, _) ->
       let x' = coordinate_converter x false in
