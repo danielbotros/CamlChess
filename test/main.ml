@@ -32,6 +32,18 @@ let new_board =
     [ "♜"; "♞"; "♝"; "♛"; "♚"; "♝"; "♞"; "♜" ];
   ]
 
+let board1 =
+  [
+    [ "♖"; "♘"; "♗"; "♕"; "♔"; "♗"; "♘"; "♖" ];
+    [ "-"; "-"; "-"; "♙"; "♙"; "♛"; "♙"; "♙" ];
+    [ "♙"; "♙"; "♙"; "-"; "-"; "-"; "-"; "-" ];
+    [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
+    [ "-"; "-"; "♝"; "-"; "♟"; "-"; "-"; "-" ];
+    [ "-"; "-"; "-"; "-"; "-"; "-"; "-"; "-" ];
+    [ "♟"; "♟"; "♟"; "♟"; "-"; "♟"; "♟"; "♟" ];
+    [ "♜"; "♞"; "♝"; "-"; "♚"; "-"; "♞"; "♜" ];
+  ]
+
 let coordinate_converter_row ltr =
   match ltr with
   | 'a' -> "1"
@@ -60,10 +72,6 @@ let coordinate_converter (cmd : string) =
   coordinate_converter_col cmd.[1] ^ coordinate_converter_row cmd.[0]
 
 let string_to_coord s = Some (s.[0], int_of_char s.[1] - 48)
-
-let sample_test (name : string) test_output expected_output : test =
-  name >:: fun _ -> assert_equal expected_output test_output
-
 let b_king = Piece.string_to_piece "♔"
 let w_queen = Piece.string_to_piece "♛"
 let b_knight = Piece.string_to_piece "♘"
@@ -78,16 +86,33 @@ let create_piece_tester (name : string) (piece : Piece.piece_type * Piece.color)
     (snd piece |> Piece.create_piece (fst piece) (Some (ch, i)) |> f)
 
 let st = State.create_state (Board.init_board new_board)
+let st1 = State.create_state (Board.init_board board1)
 let piece_loc_helper x = (Piece.get_piece_type x, Piece.get_color x)
 
-let piece_at_loc c i =
-  Some (c, i) |> Board.get_piece (State.get_board st) |> piece_loc_helper
+let piece_at_loc c i input_state =
+  Some (c, i)
+  |> Board.get_piece (State.get_board input_state)
+  |> piece_loc_helper
 
 let create_state_tester (name : string) (ch : char) (i : int)
     (piece : Piece.piece_type * Piece.color) : test =
   name >:: fun _ ->
-  try assert_equal piece (piece_at_loc ch i)
+  try assert_equal piece (piece_at_loc ch i st)
   with Board.InvalidMove -> assert_equal true true
+
+let has_no_moves (name : string) (loc : string) input_st
+    (expected_output : bool) : test =
+  name >:: fun _ ->
+  let point = loc |> coordinate_converter |> string_to_coord in
+  match point with
+  | Some (ch, i) ->
+      let lst1 =
+        List.filter (fun x -> x <> None) (State.possible_moves input_st (ch, i))
+      in
+      let _ = print_endline (string_of_int (List.length lst1)) in
+      let no_moves = 0 = List.length lst1 in
+      assert_equal no_moves expected_output
+  | _ -> assert_equal false true
 
 let pawn_move (name : string) (loc1 : string) (loc2 : string) f
     (expected_output : bool) : test =
@@ -123,6 +148,22 @@ let valid_tester (name : string) (loc1 : string) (loc2 : string) f
     (func
        (loc1 |> coordinate_converter |> string_to_coord)
        (loc2 |> coordinate_converter |> string_to_coord))
+    expected_output
+
+let en_passant (name : string) (loc1 : string) (loc2 : string) (loc3 : string) f
+    (expected_output : bool) : test =
+  name >:: fun _ ->
+  let func =
+    match f with
+    | "bpawn" -> Validate.valid_en_passant
+    | "wpawn" -> Validate.valid_en_passant
+    | _ -> failwith "invalid en_passant test"
+  in
+  assert_equal
+    (func
+       (loc1 |> coordinate_converter |> string_to_coord)
+       (loc2 |> coordinate_converter |> string_to_coord)
+       (loc3 |> coordinate_converter |> string_to_coord))
     expected_output
 
 let create_piece_tests =
@@ -162,7 +203,8 @@ let valid_move_tests =
     valid_tester "IV black pawn capture move forward" "f4" "f3" "bpawn" false;
     valid_tester "V bishop diagonal move top right" "c1" "g5" "bishop" true;
     valid_tester "V bishop diagonal move top left" "f4" "c7" "bishop" true;
-    valid_tester "V bishop diagonal move bottom right" "e5" "a1" "bishop" true;
+    valid_tester "V bishop diagonal move bottom left" "e5" "a1" "bishop" true;
+    valid_tester "V bishop diagonal move bottom right" "e5" "h2" "bishop" true;
     valid_tester "V bishop diagonal move bottom left" "f7" "b3" "bishop" true;
     valid_tester "IV bishop move up 3 squares" "f3" "f6" "bishop" false;
     valid_tester "V rook move vertically" "f2" "f7" "rook" true;
@@ -198,8 +240,51 @@ let valid_move_tests =
     valid_tester "IV king move diagonal multiple squares" "e1" "c3" "king" false;
   ]
 
+let en_passant_tests =
+  [
+    en_passant
+      "White pawn (moves from b5 to a6) captures black pawn on a5 via enpassant"
+      "b5" "a6" "a5" "wpawn" true;
+    en_passant
+      "Wht pawn (moves from b5 to a6) can't capture Blk pawn on a6 via \
+       enpassant"
+      "b5" "a6" "a6" "wpawn" false;
+    en_passant
+      "Blk pawn (moves from d4 to c3) captures Wht pawn on c4 via enpassant"
+      "d4" "c3" "c4" "bpawn" true;
+    en_passant
+      "Blk pawn (moves from d4 to c3) can't capture Wht pawn on c3 via \
+       enpassant"
+      "d4" "c3" "c3" "wpawn" false;
+  ]
+
+let has_no_moves_tests =
+  [
+    has_no_moves "On new_board, white king has no moves" "e1" st true;
+    has_no_moves "On new_board, white knight has moves" "g1" st false;
+    has_no_moves "On new_board, black king has no moves" "e8" st true;
+    has_no_moves "On new_board, black bishop has no moves" "f8" st true;
+    has_no_moves "On new_board, white rook has no moves" "h1" st true;
+    has_no_moves "On new_board, black queen has no moves" "d8" st true;
+    has_no_moves "On new_board, white pawn has moves" "e2" st false;
+    has_no_moves "On new_board, black pawn has moves" "e7" st false;
+    has_no_moves "On st1, white king has moves" "e1" st1 false;
+    has_no_moves "On st1, white bishop has moves" "c4" st1 false;
+    has_no_moves "On st1, black rook has moves" "a8" st1 false;
+    has_no_moves "On st1, black bishop has moves" "c8" st1 false;
+    has_no_moves "On st1, black knight has no moves" "b8" st1 true;
+    has_no_moves "On st1, black queen has moves" "d8" st1 false;
+  ]
+
 let suite =
   "chess test suite"
-  >::: List.flatten [ create_piece_tests; create_state_tests; valid_move_tests ]
+  >::: List.flatten
+         [
+           create_piece_tests;
+           create_state_tests;
+           valid_move_tests;
+           en_passant_tests;
+           has_no_moves_tests;
+         ]
 
 let _ = run_test_tt_main suite

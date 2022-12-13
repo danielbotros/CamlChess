@@ -17,7 +17,7 @@ val get_board : state -> Board.board
 (** [get_board st] returns the state's board. *)
 
 val possible_moves : state -> char * int -> (char * int) option list
-(** [possible moves st pos] is all the possible moves a piece can make from
+(** [possible_moves st pos] is all the possible moves a piece can make from
     [pos]. *)
 
 val graveyard : state -> string list
@@ -28,7 +28,7 @@ val create_state : Board.board -> state
 
 val update_state :
   bool -> bool -> state -> (char * int) option -> (char * int) option -> state
-(** [update castle ai state old_pos new_pos] updates the game state after one
+(** [update_castle ai state old_pos new_pos] updates the game state after one
     player turn by moving a piece, adding the move to the move list, and
     changing turns. *)
 
