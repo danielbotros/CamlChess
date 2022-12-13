@@ -10,6 +10,10 @@
     with the basic initialization in modules State and Board) using OUnit and
     module State, module Command, and module Board (the more complex, mid-game
     functionality portions of State and Board) by playing the game run by main.
+    Additionally, we test the functionality of en passant, which is a tricky
+    pawn-capturing related concept, and whether we correctly obtain the complete
+    list of all valid moves for a given piece. The latter is crucial for many
+    reasons, such as to ensure that checkmate and stalemate function correctly.
     The reason we can gurantee the certainty and correctness of these events and
     their interactions is because by using OUnit to test the move validation, we
     know that pieces cannot make illegal moves. By playing the game, we can
