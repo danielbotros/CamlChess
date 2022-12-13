@@ -44,6 +44,18 @@ let board1 =
     [ "♜"; "♞"; "♝"; "-"; "♚"; "-"; "♞"; "♜" ];
   ]
 
+let queens_gambit_declined =
+  [
+    [ "♖"; "-"; "♗"; "♕"; "♔"; "♗"; "-"; "♖" ];
+    [ "♙"; "♙"; "♙"; "-"; "-"; "♙"; "♙"; "♙" ];
+    [ "-"; "-"; "♘"; "-"; "♙"; "♘"; "-"; "-" ];
+    [ "-"; "-"; "-"; "♙"; "-"; "-"; "-"; "-" ];
+    [ "-"; "-"; "♟"; "♟"; "-"; "-"; "-"; "-" ];
+    [ "-"; "-"; "♞"; "-"; "-"; "-"; "♟"; "-" ];
+    [ "♟"; "♟"; "-"; "-"; "♟"; "♟"; "-"; "♟" ];
+    [ "♜"; "-"; "♝"; "♛"; "♚"; "♝"; "♞"; "♜" ];
+  ]
+
 let coordinate_converter_row ltr =
   match ltr with
   | 'a' -> "1"
@@ -87,6 +99,7 @@ let create_piece_tester (name : string) (piece : Piece.piece_type * Piece.color)
 
 let st = State.create_state (Board.init_board new_board)
 let st1 = State.create_state (Board.init_board board1)
+let st2 = State.create_state (Board.init_board queens_gambit_declined)
 let piece_loc_helper x = (Piece.get_piece_type x, Piece.get_color x)
 
 let piece_at_loc c i input_state =
@@ -261,19 +274,41 @@ let en_passant_tests =
 let has_no_moves_tests =
   [
     has_no_moves "On new_board, white king has no moves" "e1" st true;
-    has_no_moves "On new_board, white knight has moves" "g1" st false;
+    has_no_moves "On new_board, white knight (g1) has moves" "g1" st false;
     has_no_moves "On new_board, black king has no moves" "e8" st true;
-    has_no_moves "On new_board, black bishop has no moves" "f8" st true;
-    has_no_moves "On new_board, white rook has no moves" "h1" st true;
+    has_no_moves "On new_board, black bishop (f8) has no moves" "f8" st true;
+    has_no_moves "On new_board, white rook (h1) has no moves" "h1" st true;
     has_no_moves "On new_board, black queen has no moves" "d8" st true;
-    has_no_moves "On new_board, white pawn has moves" "e2" st false;
-    has_no_moves "On new_board, black pawn has moves" "e7" st false;
-    has_no_moves "On st1, white king has moves" "e1" st1 false;
-    has_no_moves "On st1, white bishop has moves" "c4" st1 false;
-    has_no_moves "On st1, black rook has moves" "a8" st1 false;
-    has_no_moves "On st1, black bishop has moves" "c8" st1 false;
-    has_no_moves "On st1, black knight has no moves" "b8" st1 true;
-    has_no_moves "On st1, black queen has moves" "d8" st1 false;
+    has_no_moves "On new_board, white pawn (e2) has moves" "e2" st false;
+    has_no_moves "On new_board, black pawn (e7) has moves" "e7" st false;
+    has_no_moves "On board1, white king has moves" "e1" st1 false;
+    has_no_moves "On board1, white bishop (c4) has moves" "c4" st1 false;
+    has_no_moves "On board1, black rook (a8) has moves" "a8" st1 false;
+    has_no_moves "On board1, black bishop (c8) has moves" "c8" st1 false;
+    has_no_moves "On board1, black knight (b8) has no moves" "b8" st1 true;
+    has_no_moves "On board1, black queen has moves" "d8" st1 false;
+    has_no_moves "On queens_gambit_declined, black queen has moves" "d8" st2
+      false;
+    has_no_moves "On queens_gambit_declined, black rook (a8) has moves" "a8" st2
+      false;
+    has_no_moves "On queens_gambit_declined, black rook (h8) has moves" "h8" st2
+      false;
+    has_no_moves "On queens_gambit_declined, white rook (a1) has moves" "a1" st2
+      false;
+    has_no_moves "On queens_gambit_declined, white rook (h1) has no moves" "h1"
+      st2 true;
+    has_no_moves "On queens_gambit_declined, white pawn (c4) has moves" "c4" st2
+      false;
+    has_no_moves "On queens_gambit_declined, black pawn (c7) has no moves" "c7"
+      st2 true;
+    has_no_moves "On queens_gambit_declined, white bishop (f1) has moves" "f1"
+      st2 false;
+    has_no_moves "On queens_gambit_declined, white pawn (d4) has no moves" "d4"
+      st2 true;
+    has_no_moves "On queens_gambit_declined, black pawn (d5) has moves" "d5" st2
+      false;
+    has_no_moves "On queens_gambit_declined, white bishop (c1) has moves" "c1"
+      st2 false;
   ]
 
 let suite =
