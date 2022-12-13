@@ -1,3 +1,8 @@
+(** An instance of the game Chess. This module stores an instance of the game
+    Chess, defines functions for the setters/getters of a state's information,
+    GUI compatible abstractions, future state/move generation, as well as the
+    functions for determining Checkmate, Stalemate, and Check. *)
+
 type state
 (** The type [state] represents a game state and the information relevant to it,
     such as the board, a list of past moves, and current turn. *)

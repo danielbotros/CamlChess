@@ -1,3 +1,6 @@
+(** Functions and their helpers for move checking move validation of piece types
+    and path clearing. *)
+
 val char_to_int : char -> int
 (** [char_to_int c] is the integer representation of [c], a column coordinate,
     in chess. *)

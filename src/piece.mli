@@ -1,3 +1,7 @@
+(** An instance of a chess piece. This module stores an instance of the chess
+    piece, defines functions for the setters/getters of a piece's information,
+    GUI compatible abstractions, and checking for move validation. *)
+
 type color
 (** The type [color] represents the color of the piece, either [Black] or
     [White]. *)

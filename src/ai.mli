@@ -1,3 +1,6 @@
+(** Functions and their helpers for mass state generation and evaluation
+    calculations for the AI. *)
+
 val difficulty : int
 (** [difficulty] determines the difficult / intelligence of the AI.
     [difficulty]+2 is the number of moves ahead the AI will think. It's default

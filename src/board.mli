@@ -1,3 +1,8 @@
+(** An instance of a chess board. This module stores an instance of the board,
+    defines functions for the setters/getters of a state's information, GUI
+    compatible abstractions, clear path validation , as well as moving and
+    capturing pieces. *)
+
 type board
 
 exception InvalidMove
