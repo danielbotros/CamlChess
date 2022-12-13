@@ -1,4 +1,4 @@
-let difficulty = 1
+let difficulty = 2
 
 let white_pawns st =
   List.fold_left
