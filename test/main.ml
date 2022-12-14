@@ -126,7 +126,6 @@ let has_no_moves (name : string) (loc : string) input_st
       let lst1 =
         List.filter (fun x -> x <> None) (State.possible_moves input_st (ch, i))
       in
-      let _ = print_endline (string_of_int (List.length lst1)) in
       let no_moves = 0 = List.length lst1 in
       assert_equal no_moves expected_output
   | _ -> assert_equal false true
