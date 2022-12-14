@@ -10,6 +10,7 @@ exception CheckMate
 exception StaleMate
 exception Check
 
+let get_board st = st.board
 let get_turn s = s.turn
 let get_color p = p |> Piece.get_color |> Piece.color_to_string
 
@@ -17,7 +18,29 @@ let get_past_moves st =
   ( st.past_moves_pieces,
     st.past_moves |> List.map (fun (x, y) -> (Option.get x, Option.get y)) )
 
-let rec valid_move { board; graveyard; past_moves; turn } pos =
+let get_pos pos =
+  match pos with
+  | None -> failwith "Impossible: get_pos called on [None] position. "
+  | Some (c, i) -> (c, i)
+
+let print_pos = function
+  | None -> ()
+  | Some (x, y) -> print_endline (String.make 1 x ^ "," ^ string_of_int y)
+
+let create_state lst =
+  {
+    board = lst;
+    graveyard = [];
+    past_moves = [];
+    past_moves_pieces = [];
+    turn = 1;
+  }
+
+let board st = Board.board_to_list st.board
+let board_info st moves = Board.board_info_to_list st.board moves
+let graveyard st = Board.graveyard st.board
+
+let rec valid_turn { board; graveyard; past_moves; turn } pos =
   let color = if turn mod 2 = 1 then "White" else "Black" in
   valid_pos board color pos
 
@@ -34,7 +57,7 @@ let possible_moves st (pos : char * int) =
     for col = 1 to 8 do
       try
         let _ =
-          Board.move st.board
+          Board.move_piece st.board
             (Some (x, y))
             (Some (char_of_int (row + 96), col))
             false true
@@ -47,23 +70,21 @@ let possible_moves st (pos : char * int) =
   done;
   !moves
 
-let board st = Board.board_to_list st.board
-let board_info st moves = Board.board_info_to_list st.board moves
-let get_board st = st.board
-let graveyard st = Board.graveyard st.board
+let all_moves st =
+  List.map
+    (fun piece ->
+      let pos = Piece.get_position piece in
+      if get_turn st mod 2 = 1 then
+        if pos <> None && Piece.is_white piece then
+          possible_moves st (get_pos pos)
+        else [ None ]
+      else if pos <> None && Piece.is_black piece then
+        possible_moves st (get_pos pos)
+      else [ None ])
+    (Board.get_pieces (get_board st))
 
-let create_state lst =
-  {
-    board = lst;
-    graveyard = [];
-    past_moves = [];
-    past_moves_pieces = [];
-    turn = 1;
-  }
-
-let move_piece (castle : bool) (ai : bool) st (old_pos : (char * int) option)
-    (new_pos : (char * int) option) =
-  if valid_move st old_pos then
+let move (castle : bool) (ai : bool) st old_pos new_pos =
+  if valid_turn st old_pos then
     {
       board =
         (if castle then
@@ -71,7 +92,7 @@ let move_piece (castle : bool) (ai : bool) st (old_pos : (char * int) option)
            (try List.hd st.past_moves
             with Failure e -> (Some ('h', 1), Some ('h', 8)))
         else
-          Board.move st.board old_pos new_pos false ai
+          Board.move_piece st.board old_pos new_pos false ai
             (try List.hd st.past_moves
              with Failure e -> (Some ('h', 1), Some ('h', 8))));
       graveyard = Board.graveyard st.board;
@@ -93,29 +114,7 @@ let move_piece (castle : bool) (ai : bool) st (old_pos : (char * int) option)
           :: st.past_moves_pieces);
       turn = st.turn + 1;
     }
-  else failwith "invalid move"
-
-let get_pos pos =
-  match pos with
-  | None -> failwith "Impossible"
-  | Some (c, i) -> (c, i)
-
-let print_pos = function
-  | None -> ()
-  | Some (x, y) -> print_endline (String.make 1 x ^ "," ^ string_of_int y)
-
-let all_moves st =
-  List.map
-    (fun piece ->
-      let pos = Piece.get_position piece in
-      if get_turn st mod 2 = 1 then
-        if pos <> None && Piece.is_white piece then
-          possible_moves st (get_pos pos)
-        else [ None ]
-      else if pos <> None && Piece.is_black piece then
-        possible_moves st (get_pos pos)
-      else [ None ])
-    (Board.get_pieces (get_board st))
+  else failwith "[move] error: Not this team's turn. "
 
 let get_all_states st =
   let board = Board.get_pieces (get_board st) in
@@ -126,9 +125,8 @@ let get_all_states st =
            let piece_position = Piece.get_position piece in
            if piece_position <> None then
              List.map
-               (fun move ->
-                 if move <> None then
-                   move_piece false true st piece_position move
+               (fun a_move ->
+                 if a_move <> None then move false true st piece_position a_move
                  else st)
                moves_list
            else [ st ])
@@ -150,7 +148,7 @@ let can_be_captured st =
     (fun piece_pos ->
       try
         let _ =
-          Board.move st.board piece_pos king_pos false true
+          Board.move_piece st.board piece_pos king_pos false true
             (try List.hd st.past_moves
              with Failure e -> (Some ('h', 1), Some ('h', 8)))
         in
@@ -167,9 +165,8 @@ let no_moves st =
   in
   s = []
 
-let update_state (castle : bool) (ai : bool) st (old_pos : (char * int) option)
-    (new_pos : (char * int) option) =
-  let new_state = move_piece castle ai st old_pos new_pos in
+let update_state (castle : bool) (ai : bool) st old_pos new_pos =
+  let new_state = move castle ai st old_pos new_pos in
   let no_legal_moves = no_moves new_state in
   let in_check = can_be_captured new_state in
   if can_be_captured { new_state with turn = st.turn } then raise Check

@@ -48,34 +48,31 @@ let valid_en_passant pos1 pos2 pos3 =
   | Some (r1, c1), Some (r2, c2), Some (r3, c3) -> r1 = r3 && c2 = c3
   | _ -> false
 
-let valid_pawn_attack_white pos1 pos2 =
+let valid_pawn_attack pos1 pos2 white =
   match (pos1, pos2) with
   | Some (r1, c1), Some (r2, c2) ->
-      (r2 |> char_to_int) - (r1 |> char_to_int) = -1 && c1 - c2 |> abs = 1
+      if white then
+        (r2 |> char_to_int) - (r1 |> char_to_int) = -1 && c1 - c2 |> abs = 1
+      else (r2 |> char_to_int) - (r1 |> char_to_int) = 1 && c1 - c2 |> abs = 1
   | _ -> false
 
-let valid_pawn_attack_black pos1 pos2 =
+let valid_pawn_dj_move pos1 pos2 white =
   match (pos1, pos2) with
   | Some (r1, c1), Some (r2, c2) ->
-      (r2 |> char_to_int) - (r1 |> char_to_int) = 1 && c1 - c2 |> abs = 1
+      if white then
+        (r2 |> char_to_int) - (r1 |> char_to_int) = -2 && c1 - c2 = 0
+      else (r2 |> char_to_int) - (r1 |> char_to_int) = 2 && c1 - c2 = 0
   | _ -> false
 
-let valid_pawn_move_white pos1 pos2 first_move =
+let valid_pawn_move pos1 pos2 first_move white =
   match (pos1, pos2) with
   | Some (r1, c1), Some (r2, c2) ->
-      ((r2 |> char_to_int) - (r1 |> char_to_int) = -1 && c1 - c2 |> abs = 0)
-      || (r2 |> char_to_int) - (r1 |> char_to_int) = -2
-         && c1 - c2 = 0
-         && first_move
-  | _ -> false
-
-let valid_pawn_move_black pos1 pos2 first_move =
-  match (pos1, pos2) with
-  | Some (r1, c1), Some (r2, c2) ->
-      ((r2 |> char_to_int) - (r1 |> char_to_int) = 1 && c1 - c2 |> abs = 0)
-      || (r2 |> char_to_int) - (r1 |> char_to_int) = 2
-         && c1 - c2 = 0
-         && first_move
+      if white then
+        ((r2 |> char_to_int) - (r1 |> char_to_int) = -1 && c1 - c2 |> abs = 0)
+        || (valid_pawn_dj_move pos1 pos2 white && first_move)
+      else
+        ((r2 |> char_to_int) - (r1 |> char_to_int) = 1 && c1 - c2 |> abs = 0)
+        || (valid_pawn_dj_move pos1 pos2 white && first_move)
   | _ -> false
 
 let valid_knight_move pos1 pos2 =
@@ -87,7 +84,7 @@ let valid_knight_move pos1 pos2 =
          && c1 - c2 |> abs = 2
   | _ -> false
 
-let valid_castle old_pos new_pos : bool =
+let valid_castle old_pos new_pos =
   match (old_pos, new_pos) with
   | Some (r1, c1), Some (r2, c2) ->
       (r2 |> char_to_int) - (r1 |> char_to_int) |> abs = 0 && c1 - c2 |> abs = 2

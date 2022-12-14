@@ -11,8 +11,8 @@ type object_phrase = string * string
     - If the player command is ["move e2 e4"], then the object phrase is
       [\["e2"; "e4"\]].
 
-    - If the player command is ["go e2     e4"], then the object phrase is again
-      [\["e2"; "e4"\]]. *)
+    - If the player command is ["move e2     e4"], then the object phrase is
+      again [\["e2"; "e4"\]]. *)
 
 (** The type [command] represents a player command that is decomposed into a
     verb and possibly an object phrase. Invariant: the [object_phrase] carried
@@ -34,7 +34,7 @@ val parse : string -> command
     word (i.e., consecutive sequence of non-space characters) of [str] becomes
     the verb. The rest of the words, if any, become the object phrase. Examples:
 
-    - [parse "    go   e2   e4   "] is [Go \["e2"; "e4"\]]
+    - [parse "    move   e2   e4   "] is [Go \["e2"; "e4"\]]
     - [parse "quit"] is [Quit].
 
     Requires: [str] contains only alphanumeric (A-Z, a-z, 0-9) and space
@@ -44,6 +44,6 @@ val parse : string -> command
 
     Raises: [Malformed] if the command is malformed. A command is malformed if
     the verb is neither "quit", "castle", "info" nor "move", or if the verb is
-    "quit" and there is a non-empty object phrase, or if the verb is "go" and
-    there is an empty object. A command is also malformed if it's object_phrase
-    is not a valid position on the board. phrase.*)
+    "quit" and there is a non-empty object phrase, or if the verb is "move" and
+    there is an empty object phrase. A command is also malformed if it's
+    object_phrase is not a valid position on the board.*)

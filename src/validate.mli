@@ -1,5 +1,5 @@
-(** Functions and their helpers for move checking move validation of piece types
-    and path clearing. *)
+(** Functions and their helpers for move checking validation of piece types and
+    path clearing. *)
 
 val char_to_int : char -> int
 (** [char_to_int c] is the integer representation of [c], a column coordinate,
@@ -34,31 +34,29 @@ val diagonal_move : (char * int) option -> (char * int) option -> bool
 
 val is_in_en_passant :
   (char * int) option -> (char * int) option -> bool -> bool
-(** [is_in_en_passant pos1 pos2] is true if moving from [pos1] to [pos2] put the
-    pawn at [pos2] in risk of en passant, false if otherwise.*)
+(** [is_in_en_passant pos1 pos2 white] is true if moving from [pos1] to [pos2]
+    put the pawn at [pos2] in risk of en passant, false if otherwise.*)
 
 val valid_en_passant :
   (char * int) option -> (char * int) option -> (char * int) option -> bool
 (** [valid_en_passant pos1 pos2 pos3] is true if moving from [pos1] to [pos2] is
     an en passant capture for the pawn at [pos3], false if otherwise. *)
 
-val valid_pawn_attack_white : (char * int) option -> (char * int) option -> bool
-(** [valid_pawn_attack pos1 pos2] is true if moving from [pos1] to [pos2] is a
-    legal attacking move for a white pawn, false otherwise. *)
-
-val valid_pawn_attack_black : (char * int) option -> (char * int) option -> bool
-(** [valid_pawn_attack pos1 pos2] is true if moving from [pos1] to [pos2] is a
-    legal attacking move for a black pawn, false otherwise. *)
-
-val valid_pawn_move_white :
+val valid_pawn_attack :
   (char * int) option -> (char * int) option -> bool -> bool
-(** [valid_pawn_move pos1 pos2 first_move] is true if moving from [pos1] to
-    [pos2] is a legal move for a white pawn, false otherwise. *)
+(** [valid_pawn_attack pos1 pos2 white] is true if moving from [pos1] to [pos2]
+    is a legal attacking move for a pawn, false otherwise. *)
 
-val valid_pawn_move_black :
+val valid_pawn_dj_move :
   (char * int) option -> (char * int) option -> bool -> bool
-(** [valid_pawn_move pos1 pos2 first_move] is true if moving from [pos1] to
-    [pos2] is a legal move for a black pawn, false otherwise. *)
+(** [valid_pawn_dj_move pos1 pos2 white] is true if moving from [pos1] to [pos2]
+    is a legal double jump move for a pawn, false otherwise. *)
+
+val valid_pawn_move :
+  (char * int) option -> (char * int) option -> bool -> bool -> bool
+(** [valid_pawn_move_white pos1 pos2 first_move white] is true if moving from
+    [pos1] to [pos2] is a legal move for a pawn, it is not attacking, false
+    otherwise. *)
 
 val valid_castle : (char * int) option -> (char * int) option -> bool
 (** [valid_castle old_pos new_pos] is true if moving from [old_pos] to [new_pos]

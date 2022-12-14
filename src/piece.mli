@@ -52,15 +52,15 @@ val is_first_move : piece -> bool
 (** [is_first_move piece] is true if it is the first move of [piece], false
     otherwise. *)
 
-val is_pawn : piece -> bool
-(** [is_pawn piece] is true if [piece] is a pawn, false otherwise. *)
-
 val should_promote : piece -> bool
 (** [should_promote piece] is true if [piece] is type Pawn true, false otherwise*)
 
 val promote_pawn : piece -> bool -> piece
 (** [promote_pawn pawn s ai] changes the pawn to the piece_type given in string
     s*)
+
+val is_pawn : piece -> bool
+(** [is_pawn piece] is true if [piece] is a pawn, false otherwise. *)
 
 val is_king : piece -> bool
 (** [is_king piece] is true if [piece] is a king, false otherwise. *)

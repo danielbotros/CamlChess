@@ -115,7 +115,7 @@ let create_state_tester (name : string) (ch : char) (i : int)
     (piece : Piece.piece_type * Piece.color) : test =
   name >:: fun _ ->
   try assert_equal piece (piece_at_loc ch i st)
-  with Board.InvalidMove -> assert_equal true true
+  with Board.InvalidMove e -> assert_equal true true
 
 let has_no_moves (name : string) (loc : string) input_st
     (expected_output : bool) : test =
@@ -131,13 +131,16 @@ let has_no_moves (name : string) (loc : string) input_st
       assert_equal no_moves expected_output
   | _ -> assert_equal false true
 
+let pawn_func white pos1 pos2 first_move =
+  Validate.valid_pawn_move pos1 pos2 first_move white
+
 let pawn_move (name : string) (loc1 : string) (loc2 : string) f
     (expected_output : bool) : test =
   name >:: fun _ ->
   let func =
     match f with
-    | "bpawn" -> Validate.valid_pawn_move_black
-    | "wpawn" -> Validate.valid_pawn_move_white
+    | "bpawn" -> pawn_func false
+    | "wpawn" -> pawn_func true
     | _ -> failwith "invalid pawn test"
   in
   assert_equal
@@ -147,13 +150,16 @@ let pawn_move (name : string) (loc1 : string) (loc2 : string) f
        true)
     expected_output
 
+let pawn_attack_func white pos1 pos2 =
+  Validate.valid_pawn_attack pos1 pos2 white
+
 let valid_tester (name : string) (loc1 : string) (loc2 : string) f
     (expected_output : bool) : test =
   name >:: fun _ ->
   let func =
     match f with
-    | "bpawn" -> Validate.valid_pawn_attack_black
-    | "wpawn" -> Validate.valid_pawn_attack_white
+    | "bpawn" -> pawn_attack_func false
+    | "wpawn" -> pawn_attack_func true
     | "bishop" -> Validate.valid_bishop_move
     | "rook" -> Validate.valid_rook_move
     | "knight" -> Validate.valid_knight_move

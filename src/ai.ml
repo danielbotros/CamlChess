@@ -94,12 +94,12 @@ let evaluate st =
 
 let lst_max lst = List.hd (List.rev (List.sort compare lst))
 
-let rec accumlate_score state depth =
+let rec traverse_tree state depth =
   lst_max
     (List.map
        (fun next_state ->
          if depth = 0 then evaluate next_state
-         else accumlate_score next_state (depth - 1))
+         else traverse_tree next_state (depth - 1))
        (State.get_all_states state))
 
 let () = Random.self_init ()
@@ -109,7 +109,7 @@ let optimal_state st =
   let os =
     List.map
       (fun next_move ->
-        (evaluate next_move +. accumlate_score next_move difficulty, next_move))
+        (evaluate next_move +. traverse_tree next_move difficulty, next_move))
       next_moves
   in
   let os_score = lst_max (List.map (fun (score, _) -> score) os) in

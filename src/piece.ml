@@ -2,17 +2,6 @@ type color =
   | White
   | Black
 
-let color_to_string color =
-  match color with
-  | White -> "White"
-  | Black -> "Black"
-
-let string_to_color str =
-  match str with
-  | "white" -> White
-  | "black" -> Black
-  | _ -> failwith "Invalid Color"
-
 type piece_type =
   | Pawn of bool
   | Knight
@@ -27,6 +16,17 @@ type piece = {
   color : color;
   first_move : bool;
 }
+
+let string_to_color str =
+  match str with
+  | "white" -> White
+  | "black" -> Black
+  | _ -> failwith "Impossibe: Input [str] not a color."
+
+let color_to_string color =
+  match color with
+  | White -> "White"
+  | Black -> "Black"
 
 let piece_to_string piece =
   match (piece.piece_type, piece.color) with
@@ -68,7 +68,6 @@ let get_color piece = piece.color
 let is_black piece = piece.color = Black
 let is_white piece = piece.color = White
 let is_first_move piece = piece.first_move
-let is_pawn piece = get_piece_type piece = Pawn false
 
 let should_promote piece =
   match get_piece_type piece with
@@ -94,6 +93,7 @@ let rec promote_pawn pawn ai =
         print_endline "Try\n\n   again:";
         promote_pawn pawn false
 
+let is_pawn piece = get_piece_type piece = Pawn false
 let is_king piece = get_piece_type piece = King
 let is_queen piece = get_piece_type piece = Queen
 let is_knight piece = get_piece_type piece = Knight

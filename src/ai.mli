@@ -48,8 +48,8 @@ val evaluate : State.state -> float
 val lst_max : 'a list -> 'a
 (** [lst_max lst] is the maximum value of this [lst]. *)
 
-val accumlate_score : State.state -> int -> float
-(** [accumlate_score st depth] is the score of the best possible set of moves
+val traverse_tree : State.state -> int -> float
+(** [traverse_tree st depth] is the score of the best possible set of moves
     (i.e. game states) after [depth]+1 moves. *)
 
 val optimal_state : State.state -> State.state

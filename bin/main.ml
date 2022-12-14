@@ -3,7 +3,9 @@ open Game
 open Command
 open State
 
-let new_board =
+type gui = string list list
+
+let (new_board : gui) =
   [
     [ "♖"; "♘"; "♗"; "♕"; "♔"; "♗"; "♘"; "♖" ];
     [ "♙"; "♙"; "♙"; "♙"; "♙"; "♙"; "♙"; "♙" ];
@@ -14,6 +16,8 @@ let new_board =
     [ "♟"; "♟"; "♟"; "♟"; "♟"; "♟"; "♟"; "♟" ];
     [ "♜"; "♞"; "♝"; "♛"; "♚"; "♝"; "♞"; "♜" ];
   ]
+
+let create_gui () = new_board
 
 let coordinate_converter_row ltr rev =
   match ltr with
@@ -51,7 +55,7 @@ let coordinate_converter (cmd : string) (rev : bool) =
     coordinate_converter_col cmd.[1] false
     ^ coordinate_converter_row cmd.[0] false
 
-let print_board board grave (moves1, moves2, moves3) =
+let print_board (board : gui) (grave : gui) (moves1, moves2, moves3) =
   let rec helper c bd gr =
     match (bd, gr) with
     | [], [ []; []; []; [] ] ->
@@ -347,8 +351,8 @@ let rec play_game_helper st info ai =
       exit 0
 
 (** [play_game new_board] starts the chess game. *)
-let rec play_game new_board ai =
-  play_game_helper (State.create_state (Board.init_board new_board)) true ai
+let rec play_game gui ai =
+  play_game_helper (State.create_state (Board.init_board gui)) true ai
 
 let rec main_helper start n =
   match start with
@@ -362,11 +366,11 @@ let rec main_helper start n =
         | "yes" | "AI" ->
             ANSITerminal.print_string [ ANSITerminal.yellow ]
               "\n\n         ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
-            play_game new_board true
+            play_game (create_gui ()) true
         | "no" ->
             ANSITerminal.print_string [ ANSITerminal.yellow ]
               "\n\n         ♛  ♔  Welcome to your Game of Chess! ♔  ♛\n";
-            play_game new_board false
+            play_game (create_gui ()) false
         | _ ->
             print_endline "\n             I don't understand.";
             ai_helper 1
