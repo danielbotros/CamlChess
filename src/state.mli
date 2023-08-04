@@ -84,5 +84,6 @@ val no_moves : state -> bool
 
 val update_state :
   bool -> bool -> state -> (char * int) option -> (char * int) option -> state
-(** [update_castle ai state old_pos new_pos] updates the game state after one
-    player turn's actions, which may throw [Check], [Checkmate], or [Stalemate] *)
+(** [update_state castle ai state old_pos new_pos] updates the game state after
+    one player turn's actions, which may throw [Check], [Checkmate], or
+    [Stalemate] *)
